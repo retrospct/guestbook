@@ -1,0 +1,103 @@
+.btnBase {
+  background-color: #f5f5f5;
+  border: 2px solid #fff;
+  border-radius: 9px;
+  color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857;
+  margin-bottom: 0;
+  padding: 6px 12px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btnBase:hover,
+.btnBase:focus,
+.btnBase:active {
+  background-color: #e3e3e3;
+  border-color: #adadad;
+  color: #333;
+}
+
+.btnSolid {
+  /* TODO: replace with custom css color vars */
+  /* TODO: these button variants are not DRY */
+  background: #614f9e;
+  border: 2px solid #fff;
+  border-radius: 9px;
+  color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857;
+  margin-bottom: 0;
+  padding: 8px 20px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btnSolid:hover,
+.btnSolid:focus,
+.btnSolid:active {
+  background: #1f0073;
+  border-color: #adadad;
+}
+
+.btnGhost {
+  background: transparent;
+  border: 2px solid #fff;
+  border-radius: 9px;
+  color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857;
+  margin-bottom: 0;
+  padding: 8px 20px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btnGhost:hover,
+.btnGhost:focus,
+.btnGhost:active {
+  border-color: #adadad;
+  color: #e3e3e3;
+}
+
+.btnRecord {
+  background: red;
+  border: 2px solid #fff;
+  border-radius: 100%;
+  color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857;
+  margin-bottom: 0;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: pointer;
+  height: 80px;
+  width: 80px;
+  position: absolute;
+  /* top: VIDEO_H - (80 + 24); */
+  left: calc(50% - 40px);
+}
+
+.btnRecord:hover,
+.btnRecord:focus,
+.btnRecord:active {
+  background: deeppink;
+  color: #000;
+  border-color: #000;
+}

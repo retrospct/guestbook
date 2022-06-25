@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
-import { bytesToSize } from '../utils'
+import { Gallery } from './Gallery'
+import styles from '../styles/SelfView.module.css'
 
 const VIDEO_H = 720
 const VIDEO_W = 1280
 
-interface LastFile {
+export interface LastFile {
   name: string
   lastModified: number
   size: number
@@ -16,9 +17,9 @@ export const SelfView = () => {
   const mediaStream: MutableRefObject<MediaStream | null> = useRef(null)
   const mediaRecorder: MutableRefObject<MediaRecorder | null> = useRef(null)
 
-  const [lastFile, setLastFile] = useState<LastFile | null>(null)
-  const [gallery, setGallery] = useState<LastFile[] | null>(null)
   const [selfView, setSelfView] = useState(false)
+  const [lastFile, setLastFile] = useState<File | null>(null)
+  const [files, setFiles] = useState<File[] | null>(null)
 
   useEffect(() => {
     const initMediaStream = async () => {
@@ -71,7 +72,8 @@ export const SelfView = () => {
         // upload(createdFile);
 
         // TODO: implement better UI feedback to user
-        setLastFile({ name: createdFile.name, lastModified: createdFile.lastModified, size: createdFile.size })
+        setLastFile(createdFile)
+        // setLastFile({ name: createdFile.name, lastModified: createdFile.lastModified, size: createdFile.size })
 
         // cleanup saved chunks
         savedChunks = []
@@ -91,14 +93,9 @@ export const SelfView = () => {
   }, [selfView])
 
   useEffect(() => {
-    if (lastFile && !gallery) setGallery([lastFile])
-    else if (lastFile && gallery) setGallery([...gallery, lastFile])
+    if (lastFile) setFiles([lastFile])
     return () => {}
   }, [lastFile])
-
-  // const toggleStream = (stream: MutableRefObject<MediaStream | null>) => {
-  //   selfView ? stream.current?.getTracks().forEach((track) => track.stop()) :
-  // }
 
   const startRecorder = () => {
     // save a new chunk of data every 250ms
@@ -122,56 +119,19 @@ export const SelfView = () => {
       {selfView && (
         <div style={{ height: 720, width: 1280, position: 'relative', background: '#000' }}>
           <video autoPlay muted playsInline controls={false} style={{ transform: 'scaleX(-1)' }} ref={videoElement} />
-          <button
-            style={{
-              background: 'red',
-              height: 80,
-              width: 80,
-              borderRadius: 100,
-              border: '2px solid #fff',
-              cursor: 'pointer',
-              position: 'absolute',
-              top: VIDEO_H - (80 + 24),
-              left: 'calc(50% - 40px)'
-            }}
-            onClick={onRecordButtonClick}
-          />
+          <button className={styles.btnRecord} style={{ top: VIDEO_H - (80 + 24) }} onClick={onRecordButtonClick}>REC</button>
         </div>
       )}
-      <button
-        style={{
-          marginTop: 48,
-          background: 'violet',
-          height: 44,
-          width: 120,
-          borderRadius: 9,
-          border: '2px solid #fff',
-          cursor: 'pointer'
-        }}
-        onClick={() => setSelfView(!selfView)}
-      >
-        Camera On/Off
-      </button>
-      <button
-        style={{
-          marginTop: 48,
-          background: 'grey',
-          height: 44,
-          width: 120,
-          borderRadius: 9,
-          border: '2px solid #fff',
-          cursor: 'pointer'
-        }}
-        onClick={() => setGallery(null)}
-      >
-        Reset Gallery
-      </button>
-      {gallery &&
-        gallery.map((item, i) => (
-          <p key={`${item.lastModified}-${i}`}>
-            {item.name} | {bytesToSize(item.size)}
-          </p>
-        ))}
+      <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+        <button className={styles.btnSolid} onClick={() => setSelfView(!selfView)}>
+          Camera On/Off
+        </button>
+      </div>
+      <Gallery files={files}>
+        <button className={styles.btnGhost} onClick={() => setFiles(null)}>
+          Reset Gallery
+        </button>
+      </Gallery>
     </div>
   )
 }
