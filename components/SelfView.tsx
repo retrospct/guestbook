@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
-import { bytesToSize } from '../utils'
+import { Gallery } from './Gallery'
+import styles from '../styles/SelfView.module.css'
+import * as UpChunk from '@mux/upchunk'
 
 const VIDEO_H = 720
 const VIDEO_W = 1280
 
-interface LastFile {
+export interface LastFile {
   name: string
   lastModified: number
   size: number
@@ -16,9 +18,9 @@ export const SelfView = () => {
   const mediaStream: MutableRefObject<MediaStream | null> = useRef(null)
   const mediaRecorder: MutableRefObject<MediaRecorder | null> = useRef(null)
 
-  const [lastFile, setLastFile] = useState<LastFile | null>(null)
-  const [gallery, setGallery] = useState<LastFile[] | null>(null)
   const [selfView, setSelfView] = useState(false)
+  const [lastFile, setLastFile] = useState<File | null>(null)
+  const [files, setFiles] = useState<File[]>([])
 
   useEffect(() => {
     const initMediaStream = async () => {
@@ -68,10 +70,11 @@ export const SelfView = () => {
         // TODO: implement save file locally
 
         // TODO: implement upload to mux
-        // upload(createdFile);
+        upload(createdFile)
 
         // TODO: implement better UI feedback to user
-        setLastFile({ name: createdFile.name, lastModified: createdFile.lastModified, size: createdFile.size })
+        setLastFile(createdFile)
+        // setLastFile({ name: createdFile.name, lastModified: createdFile.lastModified, size: createdFile.size })
 
         // cleanup saved chunks
         savedChunks = []
@@ -91,22 +94,17 @@ export const SelfView = () => {
   }, [selfView])
 
   useEffect(() => {
-    if (lastFile && !gallery) setGallery([lastFile])
-    else if (lastFile && gallery) setGallery([...gallery, lastFile])
+    if (lastFile) setFiles((prev) => [...prev, lastFile])
     return () => {}
   }, [lastFile])
 
-  // const toggleStream = (stream: MutableRefObject<MediaStream | null>) => {
-  //   selfView ? stream.current?.getTracks().forEach((track) => track.stop()) :
-  // }
-
   const startRecorder = () => {
-    // save a new chunk of data every 250ms
-    mediaRecorder.current?.start(250)
+    // save a new chunk of data every 500ms
+    mediaRecorder.current?.start(500)
     // stop the video after three seconds
     setTimeout(() => {
       mediaRecorder.current?.stop()
-    }, 1000)
+    }, 3000)
   }
 
   const onRecordButtonClick = () => {
@@ -122,56 +120,49 @@ export const SelfView = () => {
       {selfView && (
         <div style={{ height: 720, width: 1280, position: 'relative', background: '#000' }}>
           <video autoPlay muted playsInline controls={false} style={{ transform: 'scaleX(-1)' }} ref={videoElement} />
-          <button
-            style={{
-              background: 'red',
-              height: 80,
-              width: 80,
-              borderRadius: 100,
-              border: '2px solid #fff',
-              cursor: 'pointer',
-              position: 'absolute',
-              top: VIDEO_H - (80 + 24),
-              left: 'calc(50% - 40px)'
-            }}
-            onClick={onRecordButtonClick}
-          />
+          <button className={styles.btnRecord} style={{ top: VIDEO_H - (80 + 24) }} onClick={onRecordButtonClick}>
+            REC
+          </button>
         </div>
       )}
-      <button
-        style={{
-          marginTop: 48,
-          background: 'violet',
-          height: 44,
-          width: 120,
-          borderRadius: 9,
-          border: '2px solid #fff',
-          cursor: 'pointer'
-        }}
-        onClick={() => setSelfView(!selfView)}
-      >
-        Camera On/Off
-      </button>
-      <button
-        style={{
-          marginTop: 48,
-          background: 'grey',
-          height: 44,
-          width: 120,
-          borderRadius: 9,
-          border: '2px solid #fff',
-          cursor: 'pointer'
-        }}
-        onClick={() => setGallery(null)}
-      >
-        Reset Gallery
-      </button>
-      {gallery &&
-        gallery.map((item, i) => (
-          <p key={`${item.lastModified}-${i}`}>
-            {item.name} | {bytesToSize(item.size)}
-          </p>
-        ))}
+      <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+        <button className={styles.btnSolid} onClick={() => setSelfView(!selfView)}>
+          Camera On/Off
+        </button>
+      </div>
+      <Gallery files={files}>
+        <button className={styles.btnGhost} onClick={() => setFiles([])}>
+          Reset Gallery
+        </button>
+      </Gallery>
     </div>
   )
+}
+
+const upload = async (file: File) => {
+  try {
+    const response = await fetch('/api/upload', { method: 'POST' })
+    const url = await response.text()
+
+    const upload = UpChunk.createUpload({
+      endpoint: url, // Authenticated url
+      file, // File object with your video file’s properties
+      chunkSize: 30720 // Uploads the file in ~30 MB chunks
+    })
+
+    // Subscribe to events
+    upload.on('error', (error) => {
+      console.error(error.detail)
+    })
+
+    upload.on('progress', (progress) => {
+      console.log(progress.detail)
+    })
+
+    upload.on('success', () => {
+      console.log("Wrap it up, we're done here. 👋")
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }

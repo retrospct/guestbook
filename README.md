@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Guestbook
+
+Quick and dirty recreation of the guestbook app from [this article](https://www.mux.com/blog/how-we-built-our-video-guestbook) from the Mux blog. I'm going to get the basics working (mux upload, upchunk, option to save file locally, and UI components) and then build some custom features for a birthday party coming up (green screen, Snapchat style filters, ???).
+
+Later things: refactor to build as an electron app or a react-native app too.
 
 ## Getting Started
 
@@ -19,6 +23,8 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
 ## Learn More
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 To learn more about Next.js, take a look at the following resources:
 
