@@ -43,7 +43,6 @@
 }
 
 .btnSolid:hover,
-.btnSolid:focus,
 .btnSolid:active {
   background: #1f0073;
   border-color: #adadad;
@@ -67,7 +66,6 @@
 }
 
 .btnGhost:hover,
-.btnGhost:focus,
 .btnGhost:active {
   border-color: #adadad;
   color: #e3e3e3;
@@ -95,9 +93,9 @@
 }
 
 .btnRecord:hover,
-.btnRecord:focus,
-.btnRecord:active {
+.btnRecord:active,
+.btnRecord:focus {
   background: deeppink;
-  color: #000;
-  border-color: #000;
+  color: #333;
+  border-color: #333;
 }

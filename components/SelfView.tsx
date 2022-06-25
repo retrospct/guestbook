@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
 import { Gallery } from './Gallery'
 import styles from '../styles/SelfView.module.css'
-import UpChunk from '@mux/upchunk'
+import * as UpChunk from '@mux/upchunk'
 
 const VIDEO_H = 720
 const VIDEO_W = 1280
@@ -12,34 +12,6 @@ export interface LastFile {
   size: number
 }
 
-const upload = async (file: File) => {
-  try {
-    const response = await fetch('/api/upload', { method: 'POST' })
-    const url = await response.text()
-
-    const upload = UpChunk.createUpload({
-      endpoint: url, // Authenticated url
-      file, // File object with your video file’s properties
-      chunkSize: 30720 // Uploads the file in ~30 MB chunks
-    })
-
-    // Subscribe to events
-    upload.on('error', (error) => {
-      console.error(error.detail)
-    })
-
-    upload.on('progress', (progress) => {
-      console.log(progress.detail)
-    })
-
-    upload.on('success', () => {
-      console.log("Wrap it up, we're done here. 👋")
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 export const SelfView = () => {
   // Init a ref for the videoElement and mediaRecorder
   const videoElement: MutableRefObject<HTMLVideoElement | null> = useRef(null)
@@ -48,7 +20,7 @@ export const SelfView = () => {
 
   const [selfView, setSelfView] = useState(false)
   const [lastFile, setLastFile] = useState<File | null>(null)
-  const [files, setFiles] = useState<File[] | null>(null)
+  const [files, setFiles] = useState<File[]>([])
 
   useEffect(() => {
     const initMediaStream = async () => {
@@ -122,17 +94,17 @@ export const SelfView = () => {
   }, [selfView])
 
   useEffect(() => {
-    if (lastFile) setFiles([lastFile])
+    if (lastFile) setFiles([...files, lastFile])
     return () => {}
   }, [lastFile])
 
   const startRecorder = () => {
-    // save a new chunk of data every 250ms
-    mediaRecorder.current?.start(250)
+    // save a new chunk of data every 500ms
+    mediaRecorder.current?.start(500)
     // stop the video after three seconds
     setTimeout(() => {
       mediaRecorder.current?.stop()
-    }, 1000)
+    }, 5000)
   }
 
   const onRecordButtonClick = () => {
@@ -159,10 +131,38 @@ export const SelfView = () => {
         </button>
       </div>
       <Gallery files={files}>
-        <button className={styles.btnGhost} onClick={() => setFiles(null)}>
+        <button className={styles.btnGhost} onClick={() => setFiles([])}>
           Reset Gallery
         </button>
       </Gallery>
     </div>
   )
+}
+
+const upload = async (file: File) => {
+  try {
+    const response = await fetch('/api/upload', { method: 'POST' })
+    const url = await response.text()
+
+    const upload = UpChunk.createUpload({
+      endpoint: url, // Authenticated url
+      file, // File object with your video file’s properties
+      chunkSize: 30720 // Uploads the file in ~30 MB chunks
+    })
+
+    // Subscribe to events
+    upload.on('error', (error) => {
+      console.error(error.detail)
+    })
+
+    upload.on('progress', (progress) => {
+      console.log(progress.detail)
+    })
+
+    upload.on('success', () => {
+      console.log("Wrap it up, we're done here. 👋")
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }

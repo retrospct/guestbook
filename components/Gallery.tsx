@@ -2,12 +2,12 @@ import styles from '../styles/Gallery.module.css'
 import { bytesToSize } from '../utils'
 
 interface GalleryProps {
-  files?: File[] | null
+  files: File[]
   children?: React.ReactNode
 }
 
 export const Gallery = (props: GalleryProps) => {
-  if (!props.files) return null
+  if (props.files.length === 0) return null
   return (
     <div className={styles.grid}>
       {props.files.map((file, i) => (
