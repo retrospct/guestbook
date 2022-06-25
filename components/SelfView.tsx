@@ -94,7 +94,7 @@ export const SelfView = () => {
   }, [selfView])
 
   useEffect(() => {
-    if (lastFile) setFiles([...files, lastFile])
+    if (lastFile) setFiles((prev) => [...prev, lastFile])
     return () => {}
   }, [lastFile])
 
@@ -104,7 +104,7 @@ export const SelfView = () => {
     // stop the video after three seconds
     setTimeout(() => {
       mediaRecorder.current?.stop()
-    }, 5000)
+    }, 3000)
   }
 
   const onRecordButtonClick = () => {
