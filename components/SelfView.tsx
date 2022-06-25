@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
 import { Gallery } from './Gallery'
 import styles from '../styles/SelfView.module.css'
+import UpChunk from '@mux/upchunk'
 
 const VIDEO_H = 720
 const VIDEO_W = 1280
@@ -9,6 +10,34 @@ export interface LastFile {
   name: string
   lastModified: number
   size: number
+}
+
+const upload = async (file: File) => {
+  try {
+    const response = await fetch('/api/upload', { method: 'POST' })
+    const url = await response.text()
+
+    const upload = UpChunk.createUpload({
+      endpoint: url, // Authenticated url
+      file, // File object with your video file’s properties
+      chunkSize: 30720 // Uploads the file in ~30 MB chunks
+    })
+
+    // Subscribe to events
+    upload.on('error', (error) => {
+      console.error(error.detail)
+    })
+
+    upload.on('progress', (progress) => {
+      console.log(progress.detail)
+    })
+
+    upload.on('success', () => {
+      console.log("Wrap it up, we're done here. 👋")
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export const SelfView = () => {
@@ -69,7 +98,7 @@ export const SelfView = () => {
         // TODO: implement save file locally
 
         // TODO: implement upload to mux
-        // upload(createdFile);
+        upload(createdFile)
 
         // TODO: implement better UI feedback to user
         setLastFile(createdFile)
@@ -119,7 +148,9 @@ export const SelfView = () => {
       {selfView && (
         <div style={{ height: 720, width: 1280, position: 'relative', background: '#000' }}>
           <video autoPlay muted playsInline controls={false} style={{ transform: 'scaleX(-1)' }} ref={videoElement} />
-          <button className={styles.btnRecord} style={{ top: VIDEO_H - (80 + 24) }} onClick={onRecordButtonClick}>REC</button>
+          <button className={styles.btnRecord} style={{ top: VIDEO_H - (80 + 24) }} onClick={onRecordButtonClick}>
+            REC
+          </button>
         </div>
       )}
       <div style={{ textAlign: 'center', padding: '2rem 0' }}>
