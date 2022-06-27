@@ -12,7 +12,7 @@ type Data = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const { type, data, metadata } = req.body
 
-  res.status(200).json({ type, data, metadata })
+  res.status(200).json(req.body)
   return
 
   if (type !== 'video.asset.created' || type !== 'video.asset.ready') {
