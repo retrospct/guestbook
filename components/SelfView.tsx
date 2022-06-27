@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
-import { Gallery } from './Gallery'
-import styles from '../styles/SelfView.module.css'
 import * as UpChunk from '@mux/upchunk'
 
-const VIDEO_H = 720
-const VIDEO_W = 1280
+import { Gallery } from './Gallery'
+import { mediaTypeSupported } from '../utils'
+
+import styles from '../styles/SelfView.module.css'
+
+const VIDEO_H = 1080
+const VIDEO_W = 1920
 
 export interface LastFile {
   name: string
@@ -29,7 +32,8 @@ export const SelfView = () => {
         audio: true,
         video: {
           width: { min: VIDEO_W },
-          height: { min: VIDEO_H }
+          height: { min: VIDEO_H },
+          frameRate: { ideal: 60, max: 60 }
         }
       })
 
@@ -37,11 +41,17 @@ export const SelfView = () => {
       mediaStream.current = stream
       if (videoElement?.current) videoElement.current.srcObject = stream
 
+      // mediaStream.current.getVideoTracks()[0].applyConstraints({ frameRate: { ideal: 30, max: 60 } })
+
+      // Get MediaRecorder type support
+      const mimeType = mediaTypeSupported()
+      console.log('mimeType: ', mimeType)
+
       // MediaRecorder options
       const options = {
         audioBitsPerSecond: 128000,
         videoBitsPerSecond: 5000000,
-        mimeType: `video/webm;codecs=vp9`
+        mimeType
       }
 
       // Init MediaRecorder and set it to the ref
@@ -116,9 +126,9 @@ export const SelfView = () => {
   }
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ textAlign: 'center', position: 'relative' }}>
       {selfView && (
-        <div style={{ height: 720, width: 1280, position: 'relative', background: '#000' }}>
+        <div style={{ height: VIDEO_H, width: VIDEO_W, position: 'relative', background: '#000' }}>
           <video autoPlay muted playsInline controls={false} style={{ transform: 'scaleX(-1)' }} ref={videoElement} />
           <button className={styles.btnRecord} style={{ top: VIDEO_H - (80 + 24) }} onClick={onRecordButtonClick}>
             REC

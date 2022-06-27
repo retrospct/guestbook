@@ -1,5 +1,6 @@
-import styles from '../styles/Gallery.module.css'
 import { bytesToSize } from '../utils'
+
+import styles from '../styles/Gallery.module.css'
 
 interface GalleryProps {
   files: File[]

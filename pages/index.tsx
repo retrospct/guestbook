@@ -1,10 +1,30 @@
+import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import { SelfView } from '../components/SelfView'
+import { createClient } from '@supabase/supabase-js'
+
+import { config } from '../utils/config'
+
+import styles from '../styles/Home.module.css'
+
+const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
 const Home: NextPage = () => {
+  useEffect(() => {
+    const subscription = supabase
+      .from('activity')
+      .on('*', (payload) => {
+        /* Update our UI */
+        console.log('payload: ', payload)
+      })
+      .subscribe()
+    console.log('subscription: ', subscription)
+
+    return () => {}
+  }, [])
+
   return (
     <div className={styles.container}>
       <Head>
