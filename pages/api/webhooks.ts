@@ -9,8 +9,10 @@ type Data = {
   status: string
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const { type, data, metadata } = req.body
+
+  res.status(200).json({ type, data, metadata })
 
   if (type !== 'video.asset.created' || type !== 'video.asset.ready') {
     res.status(200).json({ status: 'ignored.' })
