@@ -7,25 +7,28 @@ const supabase = createClient(config.supabase.url, config.supabase.secret)
 
 type Data = {
   status: string
+  type?: string
+  event_id?: string
+  payload?: any
 }
 
-// TODO: replace 'any' typing with the actual event response data payload
-export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const { type, id, data } = req.body
 
-  // FIXME: for some reason it's going into this ignore conditional even if type === 'video.asset.created'
-  // if (type !== 'video.asset.created' || type !== 'video.asset.ready') {
-  //   res.status(200).json({ status: 'ignored.' })
-  //   return
-  // }
-
-  if (type === 'video.asset.created' || type === 'video.asset.ready') {
-    const entry = { type, event_id: id, payload: JSON.stringify(data) }
-    await supabase.from('activity').insert([entry])
-    res.status(200).json(entry)
+  if (type !== 'video.asset.created' && type !== 'video.asset.ready') {
+    res.status(200).json({ status: 'ignored.' })
     return
   }
-  res.status(200).json({ status: 'ok' })
+
+  const entry = { type, event_id: id, payload: JSON.stringify(data) }
+  const { error } = await supabase.from('activity').insert([entry])
+
+  if (error) {
+    res.status(500).json({ status: 'error', ...entry })
+    return
+  }
+
+  res.status(200).json({ status: 'ok', ...entry })
 }
 
 // video.asset.created example req.body payload
