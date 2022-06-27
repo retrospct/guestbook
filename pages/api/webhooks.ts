@@ -13,10 +13,11 @@ type Data = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const { type, id, data } = req.body
 
-  if (type !== 'video.asset.created' || type !== 'video.asset.ready') {
-    res.status(200).json({ status: 'ignored.' })
-    return
-  }
+  // FIXME: for some reason it's going into this ignore conditional even if type === 'video.asset.created'
+  // if (type !== 'video.asset.created' || type !== 'video.asset.ready') {
+  //   res.status(200).json({ status: 'ignored.' })
+  //   return
+  // }
 
   await supabase.from('activity').insert([{ type, event_id: id, payload: JSON.stringify(data) }])
   res.status(200).json({ status: 'ok' })
