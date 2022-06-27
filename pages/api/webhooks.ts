@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const { type, id, data } = req.body
 
   if (type !== 'video.asset.created' && type !== 'video.asset.ready') {
-    res.status(200).json({ status: 'ignored.' })
+    res.status(200).json({ status: 'ignored' })
     return
   }
 

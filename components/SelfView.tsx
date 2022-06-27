@@ -32,16 +32,13 @@ export const SelfView = () => {
         audio: true,
         video: {
           width: { min: VIDEO_W },
-          height: { min: VIDEO_H },
-          frameRate: { ideal: 60, max: 60 }
+          height: { min: VIDEO_H }
         }
       })
 
       // Set video element to stream
       mediaStream.current = stream
       if (videoElement?.current) videoElement.current.srcObject = stream
-
-      // mediaStream.current.getVideoTracks()[0].applyConstraints({ frameRate: { ideal: 30, max: 60 } })
 
       // Get MediaRecorder type support
       const mimeType = mediaTypeSupported()

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -12,12 +12,23 @@ import styles from '../styles/Home.module.css'
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
 const Home: NextPage = () => {
+  const [items, setItems] = useState<any[]>([])
+
   useEffect(() => {
     const subscription = supabase
       .from('activity')
       .on('*', (payload) => {
         /* Update our UI */
         console.log('payload: ', payload)
+        if (payload.new.payload.status === 'preparing') {
+          // setItems((prev) => [...prev, payload.new])
+          console.log('preparing...')
+        }
+        if (payload.new.payload.status === 'ready') {
+          console.log('ready...')
+          setItems((prev) => [...prev, payload.new])
+          // setItems((prev) => [...prev, prev.splice(prev.indexOf(payload.new.id), 1, payload.new)])
+        }
       })
       .subscribe()
     console.log('subscription: ', subscription)
@@ -36,6 +47,25 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <h1 className={styles.title}>Leah&apos;s Birthday Guestbook!</h1>
         <SelfView />
+        <div className={styles.grid}>
+          {items?.length > 0 &&
+            items.map((item) => (
+              <a
+                key={item.payload.id}
+                href={`https://stream.mux.com/${item.payload.playback_ids[0].id}.m3u8`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={`https://image.mux.com/${item.payload.playback_ids[0].id}/animated.gif`}
+                  width={320}
+                  height={180}
+                  alt="guestbook entry gif"
+                  // className={styles.gridItem}
+                />
+              </a>
+            ))}
+        </div>
       </main>
 
       {/* <footer className={styles.footer}>
