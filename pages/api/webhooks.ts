@@ -19,7 +19,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   //   return
   // }
 
-  await supabase.from('activity').insert([{ type, event_id: id, payload: JSON.stringify(data) }])
+  const insert = await supabase.from('activity').insert([{ type, event_id: id, payload: JSON.stringify(data) }])
+  if (insert.error) {
+    res.status(200).json({ error: insert.error })
+    return
+  }
+
+  if (insert.data) {
+    res.status(200).json({ data: insert.data })
+    return
+  }
   res.status(200).json({ status: 'ok' })
 }
 
