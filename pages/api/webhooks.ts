@@ -19,14 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   //   return
   // }
 
-  const insert = await supabase.from('activity').insert([{ type, event_id: id, payload: JSON.stringify(data) }])
-  if (insert.error) {
-    res.status(200).json({ error: insert.error })
-    return
-  }
-
-  if (insert.data) {
-    res.status(200).json({ data: insert.data })
+  if (type === 'video.asset.created' || type === 'video.asset.ready') {
+    const entry = { type, event_id: id, payload: JSON.stringify(data) }
+    await supabase.from('activity').insert([entry])
+    res.status(200).json(entry)
     return
   }
   res.status(200).json({ status: 'ok' })
