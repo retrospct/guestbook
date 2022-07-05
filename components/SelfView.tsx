@@ -15,6 +15,35 @@ export interface LastFile {
   size: number
 }
 
+const upload = async (file: File) => {
+  try {
+    const res = await (await fetch('/api/upload', { method: 'POST' })).json()
+    console.log('res.id: ', res.id)
+
+    const upload = UpChunk.createUpload({
+      endpoint: res.url, // Authenticated url
+      file, // File object with your video file’s properties
+      chunkSize: 1024 * 4 // Uploads in 4 MB chunks
+      // chunkSize: 30720 // Uploads the file in ~30 MB chunks
+    })
+
+    // Subscribe to events
+    upload.on('error', (error) => {
+      console.error(error.detail)
+    })
+
+    upload.on('progress', (progress) => {
+      console.log(progress.detail)
+    })
+
+    upload.on('success', () => {
+      console.log("Wrap it up, we're done here. 👋")
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const SelfView = () => {
   // Init a ref for the videoElement and mediaRecorder
   const videoElement: MutableRefObject<HTMLVideoElement | null> = useRef(null)
@@ -144,32 +173,4 @@ export const SelfView = () => {
       </Gallery>
     </div>
   )
-}
-
-const upload = async (file: File) => {
-  try {
-    const response = await fetch('/api/upload', { method: 'POST' })
-    const url = await response.text()
-
-    const upload = UpChunk.createUpload({
-      endpoint: url, // Authenticated url
-      file, // File object with your video file’s properties
-      chunkSize: 30720 // Uploads the file in ~30 MB chunks
-    })
-
-    // Subscribe to events
-    upload.on('error', (error) => {
-      console.error(error.detail)
-    })
-
-    upload.on('progress', (progress) => {
-      console.log(progress.detail)
-    })
-
-    upload.on('success', () => {
-      console.log("Wrap it up, we're done here. 👋")
-    })
-  } catch (error) {
-    console.error(error)
-  }
 }

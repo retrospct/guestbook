@@ -21,24 +21,16 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(auto, 1fr));
-  grid-gap: 0.5rem;
+  grid-gap: 0.75rem;
   align-items: start;
   justify-content: start;
-  align-self: start;
-  /* flex-wrap: wrap; */
-  /* max-width: 1920px; */
-  /* width: 100%; */
+  align-self: center;
 }
 
 .gridItem {
   width: 320px;
   height: 180px;
 }
-
-/* .grid span {
-  margin-right: 8px;
-  margin: 1rem;
-} */
 
 .footer {
   display: flex;
