@@ -11,27 +11,54 @@ import styles from '../styles/Home.module.css'
 
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
+const videos = async () => {
+  try {
+    const res = await (await fetch('/api/videos', { method: 'GET' })).json()
+    console.log('res: ', res)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 const Home: NextPage = () => {
   const [items, setItems] = useState<any[]>([])
 
+  // TODO: Move this up to _app or _document level in a context provider
   useEffect(() => {
     const subscription = supabase
       .from('activity')
-      .on('*', (payload) => {
+      .on('*', (event) => {
         /* Update our UI */
-        console.log('payload: ', payload)
-        if (payload.new.payload.status === 'preparing') {
-          // setItems((prev) => [...prev, payload.new])
+        console.log('event: ', event)
+        if (event.new.payload.status === 'preparing') {
+          // setItems((prev) => [...prev, event.new])
           console.log('preparing...')
         }
-        if (payload.new.payload.status === 'ready') {
+        if (event.new.payload.status === 'ready') {
           console.log('ready...')
-          setItems((prev) => [...prev, payload.new])
-          // setItems((prev) => [...prev, prev.splice(prev.indexOf(payload.new.id), 1, payload.new)])
+          setItems((prev) => [...prev, event.new.payload])
+          // setItems((prev) => [...prev, prev.splice(prev.indexOf(event.new.id), 1, event.new)])
         }
       })
       .subscribe()
     console.log('subscription: ', subscription)
+
+    return () => {}
+  }, [])
+
+  // TODO: Move this up to _app or _document level in a context provider or best practices for a nextjs app (getinitialprops?)
+  useEffect(() => {
+    const getVideos = async () => {
+      try {
+        const res = await (await fetch('/api/videos', { method: 'GET' })).json()
+        console.log('res: ', res)
+        setItems(res)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    getVideos()
+    // console.log('items: ', items)
 
     return () => {}
   }, [])
@@ -51,17 +78,17 @@ const Home: NextPage = () => {
           {items?.length > 0 &&
             items.map((item) => (
               <a
-                key={item.payload.id}
-                href={`https://stream.mux.com/${item.payload.playback_ids[0].id}.m3u8`}
+                className={styles.gridItem}
+                key={item.id}
+                href={`https://stream.mux.com/${item.playback_ids[0].id}.m3u8`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Image
-                  src={`https://image.mux.com/${item.payload.playback_ids[0].id}/animated.gif`}
+                  src={`https://image.mux.com/${item.playback_ids[0].id}/animated.gif`}
                   width={320}
                   height={180}
                   alt="guestbook entry gif"
-                  // className={styles.gridItem}
                 />
               </a>
             ))}

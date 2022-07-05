@@ -4,8 +4,6 @@
   grid-gap: 0.5rem;
   align-items: start;
   justify-content: start;
-  /* flex-wrap: wrap; */
-  /* max-width: 1920px; */
 }
 
 .card {
