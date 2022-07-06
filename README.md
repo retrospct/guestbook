@@ -38,3 +38,98 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## PlanetScale Experiment
+
+Trying out PlanetScale, using Node.js and PlanetScale CLI.
+
+### Takeaways from trying PS
+
+1. Amazingly scalable and easy to get setup using GUI or CLI
+1. It's literally a vanilla mysql DB instance with all the difficult scaling and replication stuff taken care of for you automagically
+1. Maybe use with an ORM or something that's not writing SQL queries in nodejs code to abstract away this stuff
+1. Or used to back a microservice/function through a kafka or event stream instead of directly connecting to the DB
+1. mysql2 and all the other major mysql capable NodeJs clients are really huge packages (+500kb)
+1. Look into using the other supported languages Go, Rust, Elixir, or Prisma to see if the packages are smaller or more efficient.
+
+> Instructions based off this guide, [NodeJs Guide - PlanetScale Docs](https://docs.planetscale.com/tutorials/connect-nodejs-app)
+> The [PlanetScale Admin Dashboard](https://app.planetscale.com/hypergo/hypergo) GUI can be used instead of the PS CLI.
+
+### Create a database (if not already created)
+
+```zsh
+pscale database create <DATABASE_NAME>
+```
+
+### Open a mysql shell, `<BRANCH_NAME>` is `main` by default
+
+```zsh
+pscale shell <DATABASE_NAME> <BRANCH_NAME>
+```
+
+### Create a `users` table
+
+```sql
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `email` varchar(255) NOT NULL,
+  `first_name` varchar(255),
+  `last_name` varchar(255)
+);
+```
+
+### Add a `user` to the `users` table
+
+```sql
+INSERT INTO `users` (id, email, first_name, last_name)
+VALUES  (1, 'me@jlee.cool', 'Justin', 'Lee');
+```
+
+### Verify user has been added
+
+```sql
+select * from users;
+```
+
+```sql
++----+--------------+------------+-----------+
+| id | email        | first_name | last_name |
++----+--------------+------------+-----------+
+|  1 | me@jlee.cool | Justin     | Lee       |
++----+--------------+------------+-----------+
+```
+
+### Connecting from your NodeJs app
+
+```zsh
+yarn add mysql2
+```
+
+### Querying the DB from NodeJs
+
+```typescript
+// pages/api/users.ts
+import type { NextApiRequest, NextApiResponse } from 'next'
+import mysql from 'mysql2/promise'
+
+interface User {
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+}
+
+interface Data {
+  users: User[]
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data | any>) {
+  try {
+    const connection = await mysql.createConnection(process.env.PS_DATABASE_URL ?? 'no-url')
+    const [rows, fields] = await connection.query('SELECT * FROM users')
+    res.status(200).json({ users: rows as User[] })
+  } catch (err) {
+    res.status(500).json(err)
+  }
+}
+```
