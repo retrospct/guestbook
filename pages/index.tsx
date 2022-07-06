@@ -50,7 +50,6 @@ const Home: NextPage = () => {
     }
     getVideos()
 
-
     return () => {}
   }, [])
 
