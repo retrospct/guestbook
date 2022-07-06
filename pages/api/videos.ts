@@ -9,12 +9,14 @@ export const config = {
   }
 }
 
-type Data = {
-  id: string
-  url: string
+// TODO: properly type video assets
+// interface VideoAsset {
+//   id: string
+// }
+// assets: VideoAsset[]
+interface Data {
+  assets: any
 }
-
-const cors_origin = process.env.VERCEL_URL ?? 'http://localhost:3000'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   // TODO: init a single mux video client maybe? or fix typescript typings at least
@@ -22,5 +24,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const assets = await Video.Assets.list({})
 
-  res.end(JSON.stringify(assets))
+  res.status(200).json({ assets })
 }

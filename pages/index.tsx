@@ -11,15 +11,6 @@ import styles from '../styles/Home.module.css'
 
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
-const videos = async () => {
-  try {
-    const res = await (await fetch('/api/videos', { method: 'GET' })).json()
-    console.log('res: ', res)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
 const Home: NextPage = () => {
   const [items, setItems] = useState<any[]>([])
 
@@ -50,15 +41,15 @@ const Home: NextPage = () => {
   useEffect(() => {
     const getVideos = async () => {
       try {
-        const res = await (await fetch('/api/videos', { method: 'GET' })).json()
-        console.log('res: ', res)
-        setItems(res)
+        const data = await (await fetch('/api/videos', { method: 'GET' })).json()
+        console.log('videos getVideos: ', data)
+        setItems(data.assets)
       } catch (err) {
         console.error(err)
       }
     }
     getVideos()
-    // console.log('items: ', items)
+
 
     return () => {}
   }, [])
