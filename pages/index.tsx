@@ -50,17 +50,6 @@ const Home: NextPage = () => {
     }
     getVideos()
 
-    // TODO: move this to correct place and accessible via context or SWR or react-query
-    const getUsers = async () => {
-      try {
-        const data = await (await fetch('/api/users', { method: 'GET' })).json()
-        console.log('users getUsers: ', data)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    getUsers()
-
     return () => {}
   }, [])
 
