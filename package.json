@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mux-elements/mux-player-react": "^0.1.0-beta.20",
     "@mux/mux-node": "^5.1.0",
     "@mux/upchunk": "^2.3.1",
     "@supabase/supabase-js": "^1.35.4",
