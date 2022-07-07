@@ -1,25 +1,63 @@
+import Link from 'next/link'
+import Image from 'next/image'
+
 import { bytesToSize } from '../utils'
 
 import styles from '../styles/Gallery.module.css'
 
+// TODO: type this to a video asset type
 interface GalleryProps {
-  files: File[]
+  videos: any[]
   children?: React.ReactNode
 }
 
 export const Gallery = (props: GalleryProps) => {
-  if (props.files.length === 0) return null
+  if (props.videos.length === 0) return null
   return (
-    <div style={{ width: '100%', textAlign: 'center', padding: '2rem 0' }}>
-      {props.children}
-      <div className={styles.grid}>
-        {props.files.map((file, i) => (
-          <a key={`${file.lastModified}-${i}`} href="#" className={styles.card}>
-            <h2>{bytesToSize(file.size)} &rarr;</h2>
-            <p>{file.name}</p>
+    <div className={styles.grid}>
+      {props.videos.map((video) => (
+        <Link
+          key={video.id}
+          href={`/videos/${encodeURIComponent(video.playback_ids[0].id)}`}
+          className={styles.card}
+          passHref
+        >
+          <a>
+            <div style={{ position: 'relative' }}>
+              <Image
+                src={`https://image.mux.com/${video.playback_ids[0].id}/animated.gif`}
+                width={320}
+                height={180}
+                alt="guestbook entry gif"
+              />
+              <div className={styles.cardOverlay}>
+                {/* <p>{video.id}</p> */}
+                <p>{Math.round(video.duration)}s &rarr;</p>
+              </div>
+            </div>
           </a>
-        ))}
-      </div>
+        </Link>
+      ))}
     </div>
   )
 }
+
+// export const Gallery = (props: GalleryProps) => {
+//   if (props.videos.length === 0) return null
+//   return (
+//     <div style={{ width: '100%', textAlign: 'center', padding: '2rem 0' }}>
+//       {props.children}
+//       <div className={styles.grid}>
+//         {props.videos.map((video) => (
+//           <Link key={video.id} href={`/videos/${encodeURIComponent(video.id)}`} className={styles.card}>
+//             <a>
+//               <h2>{bytesToSize(video.file.size)} &rarr;</h2>
+//               <p>{video.file.name}</p>
+//               <p>{video.id}</p>
+//             </a>
+//           </Link>
+//         ))}
+//       </div>
+//     </div>
+//   )
+// }

@@ -1,48 +1,12 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
 import * as UpChunk from '@mux/upchunk'
 
-import { Gallery } from './Gallery'
 import { mediaTypeSupported } from '../utils'
 
 import styles from '../styles/SelfView.module.css'
 
 const VIDEO_H = 1080
 const VIDEO_W = 1920
-
-export interface LastFile {
-  name: string
-  lastModified: number
-  size: number
-}
-
-const upload = async (file: File) => {
-  try {
-    const res = await (await fetch('/api/upload', { method: 'POST' })).json()
-    console.log('res.id: ', res.id)
-
-    const upload = UpChunk.createUpload({
-      endpoint: res.url, // Authenticated url
-      file, // File object with your video file’s properties
-      chunkSize: 1024 * 4 // Uploads in 4 MB chunks
-      // chunkSize: 30720 // Uploads the file in ~30 MB chunks
-    })
-
-    // Subscribe to events
-    upload.on('error', (error) => {
-      console.error(error.detail)
-    })
-
-    upload.on('progress', (progress) => {
-      console.log(progress.detail)
-    })
-
-    upload.on('success', () => {
-      console.log("Wrap it up, we're done here. 👋")
-    })
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export const SelfView = () => {
   // Init a ref for the videoElement and mediaRecorder
@@ -51,8 +15,6 @@ export const SelfView = () => {
   const mediaRecorder: MutableRefObject<MediaRecorder | null> = useRef(null)
 
   const [selfView, setSelfView] = useState(false)
-  const [lastFile, setLastFile] = useState<File | null>(null)
-  const [files, setFiles] = useState<File[]>([])
 
   useEffect(() => {
     const initMediaStream = async () => {
@@ -71,7 +33,6 @@ export const SelfView = () => {
 
       // Get MediaRecorder type support
       const mimeType = mediaTypeSupported()
-      console.log('mimeType: ', mimeType)
 
       // MediaRecorder options
       const options = {
@@ -96,7 +57,6 @@ export const SelfView = () => {
         // create a blob from savedChunks
         let finalBlob: Blob = new Blob(savedChunks, { type: options.mimeType })
         // ...and then a blob from that file...
-        // TODO: is there a better way to generate a clip number, otherwise make this a util function
         const createdFile = new File([finalBlob], `leah_hbd_clip_${Date.now()}`, {
           type: finalBlob.type
         })
@@ -104,13 +64,8 @@ export const SelfView = () => {
         console.log('createdFile: ', createdFile)
 
         // TODO: implement save file locally
-
-        // TODO: implement upload to mux
-        upload(createdFile)
-
         // TODO: implement better UI feedback to user
-        setLastFile(createdFile)
-        // setLastFile({ name: createdFile.name, lastModified: createdFile.lastModified, size: createdFile.size })
+        upload(createdFile)
 
         // cleanup saved chunks
         savedChunks = []
@@ -126,13 +81,38 @@ export const SelfView = () => {
 
     selfView ? initMediaStream() : stopStream()
 
-    return () => {}
+    return () => {
+      if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
+    }
   }, [selfView])
 
-  useEffect(() => {
-    if (lastFile) setFiles((prev) => [...prev, lastFile])
-    return () => {}
-  }, [lastFile])
+  const upload = async (file: File) => {
+    try {
+      const { id, url } = await (await fetch('/api/upload', { method: 'POST' })).json()
+
+      const upload = UpChunk.createUpload({
+        endpoint: url, // Authenticated url
+        file, // File object with your video file’s properties
+        chunkSize: 1024 * 4 // Uploads in 4 MB chunks
+        // chunkSize: 30720 // Uploads the file in ~30 MB chunks
+      })
+
+      // Subscribe to events
+      upload.on('error', (error) => {
+        console.error(error.detail)
+      })
+
+      upload.on('progress', (progress) => {
+        console.log(progress.detail)
+      })
+
+      upload.on('success', () => {
+        console.log("Wrap it up, we're done here. 👋")
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const startRecorder = () => {
     // save a new chunk of data every 500ms
@@ -166,11 +146,6 @@ export const SelfView = () => {
           Camera On/Off
         </button>
       </div>
-      <Gallery files={files}>
-        <button className={styles.btnGhost} onClick={() => setFiles([])}>
-          Reset Gallery
-        </button>
-      </Gallery>
     </div>
   )
 }
