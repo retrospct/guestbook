@@ -8,8 +8,8 @@
   margin: 4rem auto;
 }
 
-.container header {
-  margin-bottom: 2rem;
+.playerHeader {
+  margin: 2rem 0;
   width: 100%;
 }
 

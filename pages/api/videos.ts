@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Mux from '@mux/mux-node'
 
+import { VideoAsset } from '../../model'
+
 export const config = {
   api: {
     bodyParser: {
@@ -9,13 +11,8 @@ export const config = {
   }
 }
 
-// TODO: properly type video assets
-// interface VideoAsset {
-//   id: string
-// }
-// assets: VideoAsset[]
 interface Data {
-  assets: any
+  assets: VideoAsset[]
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {

@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Link as ChakraLink } from '@chakra-ui/react'
 
-import { bytesToSize } from '../utils'
+// import { bytesToSize } from '../utils'
 
 import styles from '../styles/Gallery.module.css'
 
@@ -22,7 +23,7 @@ export const Gallery = (props: GalleryProps) => {
           className={styles.card}
           passHref
         >
-          <a>
+          <ChakraLink>
             <div style={{ position: 'relative' }}>
               <Image
                 src={`https://image.mux.com/${video.playback_ids[0].id}/animated.gif`}
@@ -35,7 +36,7 @@ export const Gallery = (props: GalleryProps) => {
                 <p>{Math.round(video.duration)}s &rarr;</p>
               </div>
             </div>
-          </a>
+          </ChakraLink>
         </Link>
       ))}
     </div>
