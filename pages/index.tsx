@@ -22,13 +22,13 @@ import { User, VideoAsset } from '../model'
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
 interface HomeProps {
-  assets?: VideoAsset[]
-  users?: User[]
+  assets?: VideoAsset[] | []
+  // users?: User[]
 }
 
-const Home: NextPage = ({ assets, users }: HomeProps) => {
+const Home: NextPage = ({ assets }: HomeProps) => {
   // TODO: type this to a video asset type
-  const [videos, setVideos] = useState<VideoAsset[] | undefined>(assets)
+  const [videos, setVideos] = useState<VideoAsset[]>(assets || [])
 
   // TODO: Move this up to _app or _document level in a context provider
   useEffect(() => {
@@ -60,8 +60,8 @@ const Home: NextPage = ({ assets, users }: HomeProps) => {
 
   useEffect(() => {
     console.log('videos: ', videos)
-    console.log('users: ', users)
-  }, [videos, users])
+    // console.log('users: ', users)
+  }, [videos])
 
   return (
     <Container height="100vh">
@@ -81,12 +81,13 @@ const Home: NextPage = ({ assets, users }: HomeProps) => {
   )
 }
 
-export async function getServerSideProps(context: NextPageContext) {
+export async function getServerSideProps() {
   // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
 
   // TODO: init a single mux video client maybe? or fix typescript typings at least
   const { Video } = new Mux(process.env.MUX_TOKEN_ID ?? 'no-token', process.env.MUX_TOKEN_SECRET ?? 'no-secret')
   const assets = await Video.Assets.list({})
+  console.log('assets: ', assets)
 
   // Just a experiment, this is an NextJs API antipattern
   // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#getserversideprops-or-api-routes
@@ -94,7 +95,7 @@ export async function getServerSideProps(context: NextPageContext) {
   console.log('users getUsers: ', users)
 
   return {
-    props: { assets, users } // will be passed to the page component as props
+    props: { assets } // will be passed to the page component as props
   }
 }
 
