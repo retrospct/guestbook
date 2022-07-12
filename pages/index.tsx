@@ -15,20 +15,20 @@ import { Main } from '../components/Main'
 import { DarkModeSwitch } from '../components/DarkModeSwitch'
 // import { CTA } from "../components/CTA";
 import { Footer } from '../components/Footer'
-import { User } from '../model'
+import { User, VideoAsset } from '../model'
 
 // import styles from '../styles/Home.module.css'
 
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
 interface HomeProps {
-  assets: any[]
+  assets: VideoAsset[]
   users: User[]
 }
 
 const Home: NextPage = ({ assets, users }: HomeProps) => {
   // TODO: type this to a video asset type
-  const [videos, setVideos] = useState<any[]>(assets)
+  const [videos, setVideos] = useState<VideoAsset[]>(assets)
 
   // TODO: Move this up to _app or _document level in a context provider
   useEffect(() => {
