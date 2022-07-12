@@ -61,6 +61,16 @@ const Home: NextPage = ({ assets }: HomeProps) => {
   useEffect(() => {
     console.log('videos: ', videos)
     // console.log('users: ', users)
+    // TODO: move this to correct place and accessible via context or SWR or react-query
+    const getUsers = async () => {
+      try {
+        const data = await (await fetch('/api/users', { method: 'GET' })).json()
+        console.log('users getUsers: ', data)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    getUsers()
   }, [videos])
 
   return (
@@ -91,8 +101,8 @@ export async function getServerSideProps() {
 
   // Just a experiment, this is an NextJs API antipattern
   // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#getserversideprops-or-api-routes
-  const users = await (await fetch(`${process.env.VERCEL_URL}/api/users`, { method: 'GET' })).json()
-  console.log('users getUsers: ', users)
+  // const users = await (await fetch(`${process.env.VERCEL_URL}/api/users`, { method: 'GET' })).json()
+  // console.log('users getUsers: ', users)
 
   return {
     props: { assets } // will be passed to the page component as props
