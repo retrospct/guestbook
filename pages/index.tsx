@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextPageContext } from 'next'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Mux from '@mux/mux-node'
@@ -22,13 +22,13 @@ import { User, VideoAsset } from '../model'
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
 interface HomeProps {
-  assets: VideoAsset[]
-  users: User[]
+  assets?: VideoAsset[]
+  users?: User[]
 }
 
 const Home: NextPage = ({ assets, users }: HomeProps) => {
   // TODO: type this to a video asset type
-  const [videos, setVideos] = useState<VideoAsset[]>(assets)
+  const [videos, setVideos] = useState<VideoAsset[] | undefined>(assets)
 
   // TODO: Move this up to _app or _document level in a context provider
   useEffect(() => {
@@ -42,7 +42,12 @@ const Home: NextPage = ({ assets, users }: HomeProps) => {
         }
         if (event.new.payload.status === 'ready') {
           console.log('ready...')
-          setVideos((prev) => [...prev, event.new.payload])
+          setVideos((prev) => {
+            if (!prev) {
+              return [event.new.payload]
+            }
+            return [...prev, event.new.payload]
+          })
         }
       })
       .subscribe()
@@ -76,7 +81,7 @@ const Home: NextPage = ({ assets, users }: HomeProps) => {
   )
 }
 
-export async function getServerSideProps({ req, res }: { req: NextApiRequest; res: NextApiResponse }) {
+export async function getServerSideProps(context: NextPageContext) {
   // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
 
   // TODO: init a single mux video client maybe? or fix typescript typings at least
