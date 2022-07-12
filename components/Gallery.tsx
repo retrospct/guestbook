@@ -1,41 +1,50 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Link as ChakraLink, Heading } from '@chakra-ui/react'
 
-import { bytesToSize } from '../utils'
+// import { bytesToSize } from '../utils'
 
 import styles from '../styles/Gallery.module.css'
+import { VideoAsset } from '../model'
 
 // TODO: type this to a video asset type
 interface GalleryProps {
-  videos: any[]
+  videos: VideoAsset[]
   children?: React.ReactNode
 }
 
 export const Gallery = (props: GalleryProps) => {
-  if (props.videos.length === 0) return null
+  if (props.videos?.length === 0)
+    return (
+      <div>
+        <Heading>No videos...</Heading>
+      </div>
+    )
   return (
     <div className={styles.grid}>
       {props.videos.map((video) => (
         <Link
           key={video.id}
-          href={`/videos/${encodeURIComponent(video.playback_ids[0].id)}`}
+          href={video.playback_ids ? `/videos/${encodeURIComponent(video.playback_ids[0].id)}` : '/videos'}
           className={styles.card}
           passHref
         >
-          <a>
+          <ChakraLink>
             <div style={{ position: 'relative' }}>
               <Image
-                src={`https://image.mux.com/${video.playback_ids[0].id}/animated.gif`}
+                src={
+                  video.playback_ids ? `https://image.mux.com/${video.playback_ids[0].id}/animated.gif` : '/vercel.svg'
+                }
                 width={320}
                 height={180}
                 alt="guestbook entry gif"
               />
               <div className={styles.cardOverlay}>
                 {/* <p>{video.id}</p> */}
-                <p>{Math.round(video.duration)}s &rarr;</p>
+                <p>{Math.round(video.duration || 0)}s &rarr;</p>
               </div>
             </div>
-          </a>
+          </ChakraLink>
         </Link>
       ))}
     </div>

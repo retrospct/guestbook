@@ -1,12 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import mysql from 'mysql2/promise'
 
-interface User {
-  id: number
-  email: string
-  first_name: string
-  last_name: string
-}
+import { User } from '../../model'
 
 interface Data {
   users: User[]

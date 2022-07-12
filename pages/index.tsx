@@ -1,19 +1,34 @@
 import { useEffect, useState } from 'react'
+import type { NextPageContext } from 'next'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import Mux from '@mux/mux-node'
 import { createClient } from '@supabase/supabase-js'
+import { Link as ChakraLink, Text, Heading, Code, List, ListIcon, ListItem } from '@chakra-ui/react'
 
 import { config } from '../utils/config'
 import { SelfView } from '../components/SelfView'
 import { Gallery } from '../components/Gallery'
+// import { Hero } from "../components/Hero";
+import { Container } from '../components/Container'
+import { Main } from '../components/Main'
+import { DarkModeSwitch } from '../components/DarkModeSwitch'
+// import { CTA } from "../components/CTA";
+import { Footer } from '../components/Footer'
+import { User, VideoAsset } from '../model'
 
-import styles from '../styles/Home.module.css'
+// import styles from '../styles/Home.module.css'
 
 const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
-const Home: NextPage = () => {
+interface HomeProps {
+  assets?: VideoAsset[] | []
+  // users?: User[]
+}
+
+const Home: NextPage = ({ assets }: HomeProps) => {
   // TODO: type this to a video asset type
-  const [videos, setVideos] = useState<any[]>([])
+  const [videos, setVideos] = useState<VideoAsset[]>(assets || [])
 
   // TODO: Move this up to _app or _document level in a context provider
   useEffect(() => {
@@ -23,34 +38,29 @@ const Home: NextPage = () => {
         /* Update our UI */
         console.log('event: ', event)
         if (event.new.payload.status === 'preparing') {
-          // setVideos((prev) => [...prev, event.new])
           console.log('preparing...')
         }
         if (event.new.payload.status === 'ready') {
           console.log('ready...')
-          setVideos((prev) => [...prev, event.new.payload])
-          // setVideos((prev) => [...prev, prev.splice(prev.indexOf(event.new.id), 1, event.new)])
+          setVideos((prev) => {
+            if (!prev) {
+              return [event.new.payload]
+            }
+            return [...prev, event.new.payload]
+          })
         }
       })
       .subscribe()
     console.log('subscription: ', subscription)
 
-    return () => {}
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
-  // TODO: Move this up to _app or _document level in a context provider or best practices for a nextjs app (getinitialprops?)
   useEffect(() => {
-    const getVideos = async () => {
-      try {
-        const data = await (await fetch('/api/videos', { method: 'GET' })).json()
-        console.log('videos getVideos: ', data)
-        setVideos(data.assets)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    getVideos()
-
+    console.log('videos: ', videos)
+    // console.log('users: ', users)
     // TODO: move this to correct place and accessible via context or SWR or react-query
     const getUsers = async () => {
       try {
@@ -61,27 +71,42 @@ const Home: NextPage = () => {
       }
     }
     getUsers()
-
-    return () => {}
-  }, [])
+  }, [videos])
 
   return (
-    <div className={styles.container}>
+    <Container height="100vh">
       <Head>
         <title>Leah&apos;s Guestbook</title>
         <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>Leah&apos;s Birthday Guestbook!</h1>
+      <Main height="full">
+        <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading>
         <SelfView />
         <Gallery videos={videos} />
-      </main>
-
-      {/* <Footer /> */}
-    </div>
+      </Main>
+      <DarkModeSwitch />
+      <Footer />
+    </Container>
   )
+}
+
+export async function getServerSideProps() {
+  // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
+
+  // TODO: init a single mux video client maybe? or fix typescript typings at least
+  const { Video } = new Mux(process.env.MUX_TOKEN_ID ?? 'no-token', process.env.MUX_TOKEN_SECRET ?? 'no-secret')
+  const assets = await Video.Assets.list({})
+  console.log('assets: ', assets)
+
+  // Just a experiment, this is an NextJs API antipattern
+  // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#getserversideprops-or-api-routes
+  // const users = await (await fetch(`${process.env.VERCEL_URL}/api/users`, { method: 'GET' })).json()
+  // console.log('users getUsers: ', users)
+
+  return {
+    props: { assets } // will be passed to the page component as props
+  }
 }
 
 export default Home

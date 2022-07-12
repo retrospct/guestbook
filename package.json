@@ -9,10 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.2",
+    "@chakra-ui/react": "^2.2.1",
+    "@chakra-ui/theme-tools": "^2.0.2",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
     "@mux-elements/mux-player-react": "^0.1.0-beta.20",
     "@mux/mux-node": "^5.1.0",
     "@mux/upchunk": "^2.3.1",
     "@supabase/supabase-js": "^1.35.4",
+    "framer-motion": "^6.4.2",
     "mysql2": "^2.3.3",
     "next": "12.1.6",
     "react": "18.2.0",

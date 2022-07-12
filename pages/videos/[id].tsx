@@ -3,29 +3,38 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import MuxPlayer from '@mux-elements/mux-player-react'
 
+import { Container } from '../../components/Container'
+import { Main } from '../../components/Main'
+import { DarkModeSwitch } from '../../components/DarkModeSwitch'
+import { Footer } from '../../components/Footer'
+
 import styles from '../../styles/Video.module.css'
-import React from 'react'
 
 const Video: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
 
   return (
-    <div className={styles.container}>
+    <Container height="100vh">
       <Head>
         <title>Leah&apos;s Guestbook | Video {id}</title>
         <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header>
-        <button type="button" onClick={() => router.push('/')}>
-          &larr; Back
-        </button>
-      </header>
-      <main className={styles.muxPlayer}>
-        {!id || Array.isArray(id) ? <h2>Opps! No video ID was provided...</h2> : <VideoPlayer id={id} />}
-      </main>
-    </div>
+
+      <Main height="full">
+        <div className={styles.playerHeader}>
+          <button type="button" onClick={() => router.push('/')}>
+            &larr; Back
+          </button>
+        </div>
+        <main className={styles.muxPlayer}>
+          {!id || Array.isArray(id) ? <h2>Opps! No video ID was provided...</h2> : <VideoPlayer id={id} />}
+        </main>
+      </Main>
+      <DarkModeSwitch />
+      <Footer />
+    </Container>
   )
 }
 
