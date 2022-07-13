@@ -20,6 +20,7 @@ const Video: NextPage = () => {
         <title>Leah&apos;s Guestbook | Video {id}</title>
         <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
         <link rel="icon" href="/favicon.ico" />
+        <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
       </Head>
 
       <Main height="full">
@@ -43,6 +44,7 @@ export default Video
 const VideoPlayer = ({ id, ...rest }: { id: string }) => (
   <MuxPlayer
     {...rest}
+    style={{ height: '100%', maxWidth: '100%' }}
     streamType="on-demand"
     playbackId={id}
     metadata={{

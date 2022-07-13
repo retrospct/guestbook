@@ -55,7 +55,7 @@ export const SelfView = () => {
       // Save & upload the data on recorder stop
       mediaRecorder.current.onstop = () => {
         // create a blob from savedChunks
-        let finalBlob: Blob = new Blob(savedChunks, { type: options.mimeType })
+        const finalBlob: Blob = new Blob(savedChunks, { type: options.mimeType })
         // ...and then a blob from that file...
         const createdFile = new File([finalBlob], `leah_hbd_clip_${Date.now()}`, {
           type: finalBlob.type

@@ -17,13 +17,12 @@ type Data = {
 const cors_origin = process.env.VERCEL_URL ?? 'http://localhost:3000'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  // TODO: fix typescript typing here for token and secret
-  const { Video } = new Mux(process.env.MUX_TOKEN_ID ?? 'no-token', process.env.MUX_TOKEN_SECRET ?? 'no-secret')
+  const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!)
 
   const upload = await Video.Uploads.create({
     cors_origin,
     new_asset_settings: {
-      playback_policy: 'public'
+      playback_policy: 'signed'
     }
   })
 
