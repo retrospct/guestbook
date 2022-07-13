@@ -7,7 +7,9 @@ import theme from '../theme'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
+      <div style={{ height: '100%' }}>
+        <Component {...pageProps} />
+      </div>
     </ChakraProvider>
   )
 }

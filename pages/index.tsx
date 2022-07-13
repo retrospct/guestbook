@@ -46,13 +46,13 @@ const Home: NextPage = ({ assets }: HomeProps) => {
   }, [])
 
   return (
-    <Container height="100vh">
+    <Container>
       <Head>
         <title>Leah&apos;s Guestbook</title>
         <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Main height="full">
+      <Main>
         <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading>
         <SelfView />
         <Gallery videos={videos} />

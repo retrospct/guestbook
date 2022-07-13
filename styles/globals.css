@@ -1,12 +1,12 @@
-html,
+/* TODO: create css variables for colors and other styles */
+/* html,
 body {
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
     Helvetica Neue, sans-serif;
-  /* TODO: create css variables for colors and other styles */
-  background-color: #282c34;
-}
+    background-color: #282c34;
+  }
 
 a {
   color: inherit;
@@ -15,4 +15,4 @@ a {
 
 * {
   box-sizing: border-box;
-}
+} */

@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const upload = await Video.Uploads.create({
     cors_origin,
     new_asset_settings: {
-      playback_policy: 'signed'
+      playback_policy: 'public' // TODO: use signed uploads
     }
   })
 

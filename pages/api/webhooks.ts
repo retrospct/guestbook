@@ -16,7 +16,9 @@ type Data = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   // Verify webhook signature
   const muxSig = req.headers['mux-signature'] as string
-  Mux.Webhooks.verifyHeader(req.body, muxSig, process.env.MUX_WEBHOOK_SECRET!)
+  console.log('muxSig:', muxSig)
+  // const isValidSignature = Mux.Webhooks.verifyHeader(req.body, muxSig, process.env.MUX_WEBHOOK_SECRET!)
+  // console.log('isValidSignature:', isValidSignature)
 
   const { type, id, data } = req.body
 
