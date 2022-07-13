@@ -79,7 +79,7 @@ export async function getServerSideProps() {
 
   // Just a experiment, this is an NextJs API antipattern API route + SSR call
   // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#getserversideprops-or-api-routes
-  const { users } = await (await fetch(`${process.env.VERCEL_URL}/api/users`, { method: 'GET' })).json()
+  const { users } = await (await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/users`, { method: 'GET' })).json()
   console.log('users: ', users)
 
   return {
