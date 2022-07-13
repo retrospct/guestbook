@@ -18,10 +18,10 @@ const supabase = createClient(config.supabase.url, config.supabase.public_key)
 
 interface HomeProps {
   assets?: VideoAsset[] | []
-  users?: User[] | []
+  // users?: User[] | []
 }
 
-const Home: NextPage = ({ assets, users }: HomeProps) => {
+const Home: NextPage = ({ assets }: HomeProps) => {
   const [videos, setVideos] = useState<VideoAsset[]>(assets || [])
 
   // TODO: Move this up to _app or _document level in a context provider
@@ -56,11 +56,11 @@ const Home: NextPage = ({ assets, users }: HomeProps) => {
         <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading>
         <SelfView />
         <Gallery videos={videos} />
-        {users && (
+        {/* {users && (
           <Code maxW="sm" p={6}>
             {JSON.stringify(users[0], null, 2)}
           </Code>
-        )}
+        )} */}
       </Main>
       <DarkModeSwitch />
       <Footer />
@@ -79,11 +79,11 @@ export async function getServerSideProps() {
 
   // Just a experiment, this is an NextJs API antipattern API route + SSR call
   // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#getserversideprops-or-api-routes
-  const { users } = await (await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/users`, { method: 'GET' })).json()
-  console.log('users: ', users)
+  // const { users } = await (await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/users`, { method: 'GET' })).json()
+  // console.log('users: ', users)
 
   return {
-    props: { assets, users }
+    props: { assets }
   }
 }
 
