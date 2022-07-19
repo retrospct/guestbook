@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import Mux from '@mux/mux-node'
+// import Mux from '@mux/mux-node'
 
 import { config } from '../../utils/config'
 
@@ -15,15 +15,22 @@ type Data = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   // Verify webhook signature
-  const muxSig = req.headers['mux-signature'] as string
-  console.log('muxSig:', muxSig)
+  // const muxSig = req.headers['mux-signature'] as string
+  // console.log('muxSig:', muxSig)
   // const isValidSignature = Mux.Webhooks.verifyHeader(req.body, muxSig, process.env.MUX_WEBHOOK_SECRET!)
   // console.log('isValidSignature:', isValidSignature)
 
   const { type, id, data } = req.body
 
   // Filter for only events we care about
-  if (type !== 'video.asset.created' && type !== 'video.asset.ready') {
+  if (
+    type !== 'video.asset.created' &&
+    type !== 'video.asset.ready' &&
+    type !== 'video.asset.deleted' &&
+    type !== 'video.asset.errored' &&
+    type !== 'video.asset.updated'
+  ) {
+    console.log('type: ', type)
     res.status(200).json({ status: 'ignored' })
     return
   }
