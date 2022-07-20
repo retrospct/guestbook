@@ -14,23 +14,23 @@ import styles from '../../styles/Video.module.css'
 import { useEffect } from 'react'
 
 const Video: NextPage = () => {
-  const [token, setToken] = useState<string | null>(null)
+  // const [token, setToken] = useState<string | null>(null)
   const router = useRouter()
   const { id } = router.query
 
-  useEffect(() => {
-    const getSignedPlaybackUrl = async () => {
-      const { token } = await (
-        await fetch(`/api/video`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id })
-        })
-      ).json()
-      setToken(token)
-    }
-    getSignedPlaybackUrl()
-  }, [id])
+  // useEffect(() => {
+  //   const getSignedPlaybackUrl = async () => {
+  //     const { token } = await (
+  //       await fetch(`/api/video`, {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ id })
+  //       })
+  //     ).json()
+  //     setToken(token)
+  //   }
+  //   getSignedPlaybackUrl()
+  // }, [id])
 
   return (
     <Container height="100vh">
