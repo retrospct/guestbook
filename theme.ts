@@ -15,27 +15,32 @@ const breakpoints = createBreakpoints({
   xl: '80em'
 })
 
-const styles = {}
+// Default global chakra styles already applied
+// const styles = {
+//   global: (props) => ({
+//     body: {
+//       fontFamily: 'body',
+//       color: mode('gray.800', 'whiteAlpha.900')(props),
+//       bg: mode('white', 'gray.800')(props),
+//       lineHeight: 'base'
+//     },
+//     '*::placeholder': {
+//       color: mode('gray.400', 'whiteAlpha.400')(props)
+//     },
+//     '*, *::before, &::after': {
+//       borderColor: mode('gray.200', 'whiteAlpha.300')(props),
+//       wordWrap: 'break-word'
+//     }
+//   })
+// }
 
 const base: ThemeOverride = {
   config,
-  styles: {
-    global: (props) => ({
-      body: {
-        fontFamily: 'body',
-        color: mode('gray.800', 'whiteAlpha.900')(props),
-        bg: mode('white', 'gray.800')(props),
-        lineHeight: 'base'
-      },
-      '*::placeholder': {
-        color: mode('gray.400', 'whiteAlpha.400')(props)
-      },
-      '*, *::before, &::after': {
-        borderColor: mode('gray.200', 'whiteAlpha.300')(props),
-        wordWrap: 'break-word'
-      }
-    })
-  },
+  // styles: {
+  //   global: (props) => ({
+  //     body: {}
+  //   })
+  // },
   semanticTokens: {
     colors: {
       text: {
