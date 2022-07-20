@@ -17,7 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // Verify webhook signature
   // const muxSig = req.headers['mux-signature'] as string
   // console.log('muxSig:', muxSig)
-  // const isValidSignature = Mux.Webhooks.verifyHeader(req.body, muxSig, process.env.MUX_WEBHOOK_SECRET!)
+  // const isValidSignature = Mux.Webhooks.verifyHeader(
+  //   JSON.stringify(req.body, null, 2),
+  //   muxSig,
+  //   process.env.MUX_WEBHOOK_SECRET!
+  // )
   // console.log('isValidSignature:', isValidSignature)
 
   const { type, id, data } = req.body

@@ -41,6 +41,11 @@ export const Gallery = (props: GalleryProps) => {
               />
               <div className={styles.cardOverlay}>
                 {/* <p>{video.id}</p> */}
+                {!video.id || Array.isArray(video.id) ? null : (
+                  <button type="button" onClick={(e) => deleteVideo(e, video.id)}>
+                    Delete
+                  </button>
+                )}
                 <p>{Math.round(video.duration || 0)}s &rarr;</p>
               </div>
             </div>
@@ -49,6 +54,17 @@ export const Gallery = (props: GalleryProps) => {
       ))}
     </div>
   )
+}
+
+const deleteVideo = async (e: any, id: string) => {
+  e.preventDefault()
+  console.log('delete:', id)
+  await fetch('/api/delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  })
+  // console.log('deleteVideo data: ', data)
 }
 
 // export const Gallery = (props: GalleryProps) => {

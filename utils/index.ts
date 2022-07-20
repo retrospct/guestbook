@@ -25,10 +25,10 @@ export function mediaTypeSupported(passedTypes?: string[]) {
 
   // var to store the best supported type to return
   let bestType: string | undefined
-  let supportedTypes: { type: string; supported: boolean }[] = []
+  const supportedTypes: { type: string; supported: boolean }[] = []
 
   // iterate through the types and check if the browser supports them
-  for (let i in types) {
+  for (const i in types) {
     const typeSupported = MediaRecorder.isTypeSupported(types[i])
     supportedTypes.push({ type: types[i], supported: typeSupported })
     // save the best type if it's supported but allow function to continue iterating
@@ -36,7 +36,7 @@ export function mediaTypeSupported(passedTypes?: string[]) {
   }
 
   // print out all supported types to console
-  console.log('supportTypes: ', supportedTypes)
+  // console.log('supportTypes: ', supportedTypes)
 
   // return the best supported type with a failover value
   return bestType ? bestType : 'video/webm;codecs=avc1'

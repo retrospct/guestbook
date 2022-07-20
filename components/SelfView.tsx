@@ -5,8 +5,8 @@ import { mediaTypeSupported } from '../utils'
 
 import styles from '../styles/SelfView.module.css'
 
-const VIDEO_H = 1080
-const VIDEO_W = 1920
+const VIDEO_H = 1440
+const VIDEO_W = 2560
 
 export const SelfView = () => {
   // Init a ref for the videoElement and mediaRecorder
@@ -134,9 +134,18 @@ export const SelfView = () => {
   return (
     <div style={{ textAlign: 'center', position: 'relative' }}>
       {selfView && (
-        <div style={{ height: VIDEO_H, width: VIDEO_W, position: 'relative', background: '#000' }}>
-          <video autoPlay muted playsInline controls={false} style={{ transform: 'scaleX(-1)' }} ref={videoElement} />
-          <button className={styles.btnRecord} style={{ top: VIDEO_H - (80 + 24) }} onClick={onRecordButtonClick}>
+        <div style={{ maxHeight: VIDEO_H, width: '100%', position: 'relative', background: '#000' }}>
+          <video
+            autoPlay
+            muted
+            playsInline
+            controls={false}
+            width={VIDEO_W}
+            height={VIDEO_H}
+            style={{ width: '100%', transform: 'scaleX(-1)' }}
+            ref={videoElement}
+          />
+          <button className={styles.btnRecord} style={{ top: 'calc(100% - 104px)' }} onClick={onRecordButtonClick}>
             REC
           </button>
         </div>

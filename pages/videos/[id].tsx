@@ -1,27 +1,40 @@
+import { useState } from 'react'
 import type { NextPage } from 'next'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Script from 'next/script'
 import MuxPlayer from '@mux-elements/mux-player-react'
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
 import { DarkModeSwitch } from '../../components/DarkModeSwitch'
 import { Footer } from '../../components/Footer'
+import { Head } from '../../components/Head'
 
 import styles from '../../styles/Video.module.css'
+import { useEffect } from 'react'
 
 const Video: NextPage = () => {
+  const [token, setToken] = useState<string | null>(null)
   const router = useRouter()
   const { id } = router.query
 
+  useEffect(() => {
+    const getSignedPlaybackUrl = async () => {
+      const { token } = await (
+        await fetch(`/api/video`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        })
+      ).json()
+      setToken(token)
+    }
+    getSignedPlaybackUrl()
+  }, [id])
+
   return (
     <Container height="100vh">
-      <Head>
-        <title>Leah&apos;s Guestbook | Video {id}</title>
-        <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
-        <link rel="icon" href="/favicon.ico" />
-        <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
-      </Head>
+      <Head title={`Leah&apos;s Guestbook | Video ${id}`} />
 
       <Main height="full">
         <div className={styles.playerHeader}>
@@ -35,6 +48,11 @@ const Video: NextPage = () => {
       </Main>
       <DarkModeSwitch />
       <Footer />
+      <Script
+        id="video-player-chromecast"
+        src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+        strategy="lazyOnload"
+      />
     </Container>
   )
 }
