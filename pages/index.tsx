@@ -27,7 +27,7 @@ const Home: NextPage = (props: HomeProps) => {
     if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
       supabase
         .from('activity')
-        .on('*', (event) => {
+        .on('INSERT', (event) => {
           console.log('event: ', event)
           if (event.new.type === 'video.asset.created') console.log('video.asset.created...')
           if (event.new.type === 'video.asset.ready') {
@@ -46,13 +46,14 @@ const Home: NextPage = (props: HomeProps) => {
           }
         })
         .subscribe()
+        .onClose(() => console.log('subscription closed'))
       console.log('subscription in IF: ', supabase.getSubscriptions())
     }
     // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
     // return () => {
     //   supabase.removeAllSubscriptions()
     // }
-  }, [videos])
+  }, [])
 
   return (
     <Container>
