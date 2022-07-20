@@ -65,7 +65,9 @@ const Home: NextPage = (props: HomeProps) => {
       <Main>
         <SelfView selfView={selfView} />
         {/* <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading> */}
-        <Heading as="h1">A Mux Video Guestbook!</Heading>
+        <Heading as="h1" pt="3rem">
+          A Mux Video Guestbook!
+        </Heading>
         {videos?.length > 0 && <Gallery videos={videos} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />

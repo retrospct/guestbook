@@ -13,9 +13,9 @@ export function mediaTypeSupported(passedTypes?: string[]) {
     : [
         'video/mp4;codecs=avc1',
         'video/mp4;codecs=h264',
-        'video/webm;codecs=avc1',
-        'video/webm;codecs=vp9',
         'video/webm;codecs=h264',
+        'video/webm;codecs=vp9',
+        'video/webm;codecs=avc1',
         'video/webm',
         'video/mpeg'
         // 'video/webm;codecs=daala',

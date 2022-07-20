@@ -35,6 +35,7 @@ export const SelfView = (props: SelfViewProps) => {
 
       // Get MediaRecorder type support
       const mimeType = mediaTypeSupported()
+      console.log('mimeType:', mimeType)
 
       // MediaRecorder options
       const options = {

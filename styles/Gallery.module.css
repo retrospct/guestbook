@@ -1,8 +1,8 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(auto, 1fr));
+  grid-template-columns: repeat(4, minmax(auto, 1fr));
   grid-gap: 0.75rem;
-  align-items: start;
+  align-items: center;
   justify-content: start;
   align-self: center;
 }
