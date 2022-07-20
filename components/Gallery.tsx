@@ -34,7 +34,9 @@ export const Gallery = (props: GalleryProps) => {
             <div style={{ position: 'relative' }}>
               <Image
                 src={
-                  video.playback_ids ? `https://image.mux.com/${video.playback_ids[0].id}/animated.gif` : '/vercel.svg'
+                  video.playback_ids
+                    ? `https://image.mux.com/${video.playback_ids[0].id}/animated.gif?width=356&fps=30`
+                    : '/vercel.svg'
                 }
                 width={356}
                 height={200}

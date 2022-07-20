@@ -4,6 +4,14 @@ Quick and dirty recreation of the guestbook app from [this article](https://www.
 
 Later things: refactor to build as an electron app or a react-native app too.
 
+## To Do
+
+- [ ] Countdown timer on click
+- [ ] Prevent clicking record again while recording
+- [ ] REC => timer countdown (ideally, a timer around the rec button outside like snap or others)
+- [ ] Add video animation in gallery on recording stop/upload start (doesn't have to be the actual video yet)
+- [ ] Replace with finished gif when ready
+
 ## Getting Started
 
 First, run the development server:

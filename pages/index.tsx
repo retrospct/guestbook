@@ -27,7 +27,6 @@ const Home: NextPage = (props: HomeProps) => {
       supabase.getSubscriptions()[0]?.topic !== 'realtime:public:activity' ||
       supabase.getSubscriptions()[0]?.state === 'closed'
     ) {
-      supabase.removeAllSubscriptions()
       supabase
         .from('activity')
         .on('INSERT', (event) => {
@@ -51,6 +50,7 @@ const Home: NextPage = (props: HomeProps) => {
         .subscribe()
       console.log('subscription: ', supabase.getSubscriptions())
     }
+    // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
     // return () => {
     //   supabase.removeAllSubscriptions()
     // }
@@ -76,18 +76,16 @@ const Home: NextPage = (props: HomeProps) => {
   )
 }
 
-export async function getStaticProps() {
-  // TODO: set cache headers
-  // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
+export async function getServerSideProps() {
+  // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#caching-with-server-side-rendering-ssr
+  // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=30')
 
   // TODO: init a single mux video client for the entire app
   const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!)
   const assets = await Video.Assets.list({})
   console.log('assets: ', assets?.length)
 
-  return {
-    props: { assets }
-  }
+  return { props: { assets } }
 }
 
 export default Home

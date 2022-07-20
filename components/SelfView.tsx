@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState, MutableRefObject } from 'react'
+import { useEffect, useRef, MutableRefObject } from 'react'
 import * as UpChunk from '@mux/upchunk'
 
 import { mediaTypeSupported } from '../utils'
 
 import styles from '../styles/SelfView.module.css'
 
-const VIDEO_H = 1440
 const VIDEO_W = 2560
+const VIDEO_H = 1440
 
 interface SelfViewProps {
   selfView: boolean
@@ -134,9 +134,9 @@ export const SelfView = (props: SelfViewProps) => {
   }
 
   return (
-    <div style={{ textAlign: 'center', position: 'relative' }}>
+    <div style={{ textAlign: 'center' }}>
       {props.selfView && (
-        <div style={{ maxHeight: VIDEO_H, width: '100%', position: 'relative', background: '#000' }}>
+        <div style={{ width: '100%', position: 'relative', background: '#000' }}>
           <video
             autoPlay
             muted
@@ -144,7 +144,7 @@ export const SelfView = (props: SelfViewProps) => {
             controls={false}
             width={VIDEO_W}
             height={VIDEO_H}
-            style={{ width: '100%', transform: 'scaleX(-1)' }}
+            style={{ width: '100%', maxWidth: VIDEO_W, height: '100%', maxHeight: VIDEO_H, transform: 'scaleX(-1)' }}
             ref={videoElement}
           />
           <button className={styles.btnRecord} style={{ top: 'calc(100% - 104px)' }} onClick={onRecordButtonClick}>
