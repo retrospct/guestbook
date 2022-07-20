@@ -52,7 +52,7 @@ export const Gallery = (props: GalleryProps) => {
                     ? `https://image.mux.com/${video.playback_ids[0].id}/animated.gif?width=356&fps=30`
                     : '/vercel.svg'
                 }
-                objectFit="scale-down"
+                objectFit="contain"
                 width={video.aspect_ratio === '9:16' ? PORTRAIT_W : LANDSCAPE_W}
                 height={CARD_H}
                 alt="guestbook entry gif"
