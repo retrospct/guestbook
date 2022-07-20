@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { Heading } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
 
-import { supabase } from '../lib/supabase'
+import { supabase } from '../utils/supabase'
 import { SelfView } from '../components/SelfView'
 import { Gallery } from '../components/Gallery'
 import { Container } from '../components/Container'
@@ -23,13 +23,11 @@ const Home: NextPage = (props: HomeProps) => {
   const [selfView, setSelfView] = useState(false)
 
   useEffect(() => {
-    if (
-      supabase.getSubscriptions()[0]?.topic !== 'realtime:public:activity' ||
-      supabase.getSubscriptions()[0]?.state === 'closed'
-    ) {
+    console.log('subscription: ', supabase.getSubscriptions())
+    if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
       supabase
         .from('activity')
-        .on('INSERT', (event) => {
+        .on('*', (event) => {
           console.log('event: ', event)
           if (event.new.type === 'video.asset.created') console.log('video.asset.created...')
           if (event.new.type === 'video.asset.ready') {
@@ -48,7 +46,7 @@ const Home: NextPage = (props: HomeProps) => {
           }
         })
         .subscribe()
-      console.log('subscription: ', supabase.getSubscriptions())
+      console.log('subscription in IF: ', supabase.getSubscriptions())
     }
     // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
     // return () => {
