@@ -17,8 +17,8 @@ interface GalleryProps {
 
 export const Gallery = (props: GalleryProps) => {
   const gtc = useBreakpointValue({
-    base: '1fr',
-    xs: '1fr',
+    base: '100%',
+    xs: '100%',
     sm: 'repeat(2, minmax(auto, 1fr))',
     md: 'repeat(3, minmax(auto, 1fr))',
     lg: 'repeat(4, minmax(auto, 1fr))'
