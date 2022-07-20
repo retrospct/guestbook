@@ -8,13 +8,15 @@ import styles from '../styles/SelfView.module.css'
 const VIDEO_H = 1440
 const VIDEO_W = 2560
 
-export const SelfView = () => {
+interface SelfViewProps {
+  selfView: boolean
+}
+
+export const SelfView = (props: SelfViewProps) => {
   // Init a ref for the videoElement and mediaRecorder
   const videoElement: MutableRefObject<HTMLVideoElement | null> = useRef(null)
   const mediaStream: MutableRefObject<MediaStream | null> = useRef(null)
   const mediaRecorder: MutableRefObject<MediaRecorder | null> = useRef(null)
-
-  const [selfView, setSelfView] = useState(false)
 
   useEffect(() => {
     const initMediaStream = async () => {
@@ -79,12 +81,12 @@ export const SelfView = () => {
       mediaRecorder.current = null
     }
 
-    selfView ? initMediaStream() : stopStream()
+    props.selfView ? initMediaStream() : stopStream()
 
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [selfView])
+  }, [props.selfView])
 
   const upload = async (file: File) => {
     try {
@@ -133,7 +135,7 @@ export const SelfView = () => {
 
   return (
     <div style={{ textAlign: 'center', position: 'relative' }}>
-      {selfView && (
+      {props.selfView && (
         <div style={{ maxHeight: VIDEO_H, width: '100%', position: 'relative', background: '#000' }}>
           <video
             autoPlay
@@ -150,11 +152,11 @@ export const SelfView = () => {
           </button>
         </div>
       )}
-      <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+      {/* <div style={{ textAlign: 'center', padding: '2rem 0' }}>
         <button className={styles.btnSolid} onClick={() => setSelfView(!selfView)}>
           Camera On/Off
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }

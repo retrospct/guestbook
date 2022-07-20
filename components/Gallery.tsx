@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Link as ChakraLink, Heading } from '@chakra-ui/react'
+import { Link as ChakraLink, Heading, IconButton } from '@chakra-ui/react'
+import { CloseIcon } from '@chakra-ui/icons'
 
 // import { bytesToSize } from '../utils'
 
@@ -29,24 +30,27 @@ export const Gallery = (props: GalleryProps) => {
           className={styles.card}
           passHref
         >
-          <ChakraLink>
+          <ChakraLink lineHeight={0}>
             <div style={{ position: 'relative' }}>
               <Image
                 src={
                   video.playback_ids ? `https://image.mux.com/${video.playback_ids[0].id}/animated.gif` : '/vercel.svg'
                 }
-                width={320}
-                height={180}
+                width={356}
+                height={200}
                 alt="guestbook entry gif"
               />
               <div className={styles.cardOverlay}>
-                {/* <p>{video.id}</p> */}
                 {!video.id || Array.isArray(video.id) ? null : (
-                  <button type="button" onClick={(e) => deleteVideo(e, video.id)}>
-                    Delete
-                  </button>
+                  <IconButton
+                    icon={<CloseIcon />}
+                    aria-label="Toggle Self View Camera"
+                    variant="ghost"
+                    colorScheme="gray"
+                    onClick={(e) => deleteVideo(e, video.id)}
+                  />
                 )}
-                <p>{Math.round(video.duration || 0)}s &rarr;</p>
+                {/* <p>{Math.round(video.duration || 0)}s &rarr;</p> */}
               </div>
             </div>
           </ChakraLink>
@@ -58,31 +62,10 @@ export const Gallery = (props: GalleryProps) => {
 
 const deleteVideo = async (e: any, id: string) => {
   e.preventDefault()
-  console.log('delete:', id)
+  console.log('delete video:', id)
   await fetch('/api/delete', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id })
   })
-  // console.log('deleteVideo data: ', data)
 }
-
-// export const Gallery = (props: GalleryProps) => {
-//   if (props.videos.length === 0) return null
-//   return (
-//     <div style={{ width: '100%', textAlign: 'center', padding: '2rem 0' }}>
-//       {props.children}
-//       <div className={styles.grid}>
-//         {props.videos.map((video) => (
-//           <Link key={video.id} href={`/videos/${encodeURIComponent(video.id)}`} className={styles.card}>
-//             <a>
-//               <h2>{bytesToSize(video.file.size)} &rarr;</h2>
-//               <p>{video.file.name}</p>
-//               <p>{video.id}</p>
-//             </a>
-//           </Link>
-//         ))}
-//       </div>
-//     </div>
-//   )
-// }

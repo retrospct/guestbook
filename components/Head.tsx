@@ -1,5 +1,5 @@
 import NextHead from 'next/head'
-import { useColorMode } from '@chakra-ui/react'
+// import { useColorMode } from '@chakra-ui/react'
 
 interface HeadProps {
   title?: string
@@ -8,7 +8,7 @@ interface HeadProps {
 }
 
 export function Head(props: HeadProps) {
-  const { colorMode } = useColorMode()
+  // const { colorMode } = useColorMode()
   return (
     <NextHead>
       <title>{props.title || 'Leah&apos;s Guestbook'}</title>
@@ -16,7 +16,8 @@ export function Head(props: HeadProps) {
         name="description"
         content={props.description || 'A guestbook app made using React, TypeScript, Next.js, and Mux Video.'}
       />
-      <link rel="icon" href={colorMode === 'dark' ? '/favicon-dark.ico' : '/favicon.ico'} />
+      <link rel="icon" href="/favicon.ico" />
+      {/* <link rel="icon" href={colorMode === 'dark' ? '/favicon-dark.ico' : '/favicon.ico'} /> */}
       {props.children}
     </NextHead>
   )

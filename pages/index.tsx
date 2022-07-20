@@ -12,6 +12,7 @@ import { Main } from '../components/Main'
 import { DarkModeSwitch } from '../components/DarkModeSwitch'
 import { Footer } from '../components/Footer'
 import { VideoAsset } from '../model'
+import { SelfViewSwitch } from '../components/SelfViewSwitch'
 
 interface HomeProps {
   assets?: VideoAsset[] | []
@@ -19,9 +20,14 @@ interface HomeProps {
 
 const Home: NextPage = (props: HomeProps) => {
   const [videos, setVideos] = useState<VideoAsset[]>(props.assets || [])
+  const [selfView, setSelfView] = useState(false)
 
   useEffect(() => {
-    if (supabase.getSubscriptions()[0]?.topic !== 'realtime:public:activity') {
+    if (
+      supabase.getSubscriptions()[0]?.topic !== 'realtime:public:activity' ||
+      supabase.getSubscriptions()[0]?.state === 'closed'
+    ) {
+      supabase.removeAllSubscriptions()
       supabase
         .from('activity')
         .on('INSERT', (event) => {
@@ -30,14 +36,14 @@ const Home: NextPage = (props: HomeProps) => {
           if (event.new.type === 'video.asset.ready') {
             console.log('ready...')
             setVideos((prev) => {
-              if (!prev) return [event.new.payload]
+              if (!prev || prev.length === 0) return [event.new.payload]
               return [event.new.payload, ...prev]
             })
           }
           if (event.new.type === 'video.asset.deleted') {
             console.log('deleted...')
             setVideos((prev) => {
-              if (!prev) return []
+              if (prev.length === 1) return []
               return prev.filter((video) => video.id !== event.new.payload.id)
             })
           }
@@ -48,7 +54,7 @@ const Home: NextPage = (props: HomeProps) => {
     // return () => {
     //   supabase.removeAllSubscriptions()
     // }
-  }, [])
+  }, [videos])
 
   return (
     <Container>
@@ -58,24 +64,26 @@ const Home: NextPage = (props: HomeProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <SelfView />
-        <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading>
+        <SelfView selfView={selfView} />
+        {/* <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading> */}
+        <Heading as="h1">A Mux Video Guestbook!</Heading>
         {videos?.length > 0 && <Gallery videos={videos} />}
       </Main>
+      <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
       <DarkModeSwitch />
       <Footer />
     </Container>
   )
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   // TODO: set cache headers
   // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
 
   // TODO: init a single mux video client for the entire app
   const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!)
   const assets = await Video.Assets.list({})
-  console.log('assets: ', assets)
+  console.log('assets: ', assets?.length)
 
   return {
     props: { assets }

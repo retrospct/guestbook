@@ -1,5 +1,5 @@
 import { extendTheme, type ThemeConfig, ThemeOverride } from '@chakra-ui/react'
-import { createBreakpoints, mode } from '@chakra-ui/theme-tools'
+import { createBreakpoints } from '@chakra-ui/theme-tools'
 
 export const config: ThemeConfig = {
   initialColorMode: 'dark',
