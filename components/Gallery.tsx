@@ -43,7 +43,17 @@ export const Gallery = (props: GalleryProps) => {
       alignSelf="center"
     >
       {props.processing && (
-        <Spinner justifySelf="center" thickness="3px" speed="0.9s" emptyColor="gray.900" color="white" size="xl" />
+        <Box
+          w="100%"
+          h={CARD_H}
+          bg="gray.800"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          borderRadius={3}
+        >
+          <Spinner thickness="3px" speed="0.9s" emptyColor="gray.900" color="white" size="xl" />
+        </Box>
       )}
       {props.videos.map((video) => (
         <Link

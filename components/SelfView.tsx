@@ -148,14 +148,13 @@ export const SelfView = (props: SelfViewProps) => {
     setTimeout(() => {
       mediaRecorder.current?.stop()
       setIsRecording(false)
-    }, 5000)
+    }, 5500)
   }
 
   const onRecordButtonClick = () => {
     setCountdown(3)
     setIsCounting(true)
     // TODO: replace this with a hook with cancel to prevent issues
-    // TODO: or disable record button while a recording is already active
     setTimeout(() => {
       startRecorder()
       setIsCounting(false)
@@ -196,32 +195,3 @@ export const SelfView = (props: SelfViewProps) => {
     </Box>
   )
 }
-
-// .btnRecord {
-//   background: red;
-//   border: 2px solid #fff;
-//   border-radius: 100%;
-//   color: #fff;
-//   display: inline-block;
-//   font-size: 14px;
-//   font-weight: 400;
-//   line-height: 1.42857;
-//   margin-bottom: 0;
-//   text-align: center;
-//   vertical-align: middle;
-//   white-space: nowrap;
-//   cursor: pointer;
-//   height: 80px;
-//   width: 80px;
-//   position: absolute;
-//   /* top: VIDEO_H - (80 + 24); */
-//   left: calc(50% - 40px);
-// }
-
-// .btnRecord:hover,
-// .btnRecord:active,
-// .btnRecord:focus {
-//   background: deeppink;
-//   color: #333;
-//   border-color: #333;
-// }

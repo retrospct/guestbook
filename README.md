@@ -6,11 +6,14 @@ Later things: refactor to build as an electron app or a react-native app too.
 
 ## To Do
 
-- [ ] Countdown timer on click
-- [ ] Prevent clicking record again while recording
-- [ ] REC => timer countdown (ideally, a timer around the rec button outside like snap or others)
-- [ ] Add video animation in gallery on recording stop/upload start (doesn't have to be the actual video yet)
-- [ ] Replace with finished gif when ready
+- [x] Countdown timer on click
+- [x] Prevent clicking record again while recording
+- [-] REC => timer countdown (ideally, a timer around the rec button outside like snap or others)
+- [-] Add video animation in gallery on recording stop/upload start (doesn't have to be the actual video yet)
+- [-] Replace with finished gif when ready
+- [ ] Select camera and mic
+- [ ] Select front or back camera (mobile)
+- [ ] Better animations
 
 ## Getting Started
 
