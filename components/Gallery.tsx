@@ -1,10 +1,11 @@
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Box, Link as ChakraLink, Heading, IconButton, useBreakpointValue } from '@chakra-ui/react'
+import { Box, Link as ChakraLink, Heading, IconButton, useBreakpointValue, Spinner } from '@chakra-ui/react'
 import { CloseIcon } from '@chakra-ui/icons'
 
-// import { bytesToSize } from '../utils'
 import { VideoAsset } from '../model'
+import { Modal } from './Modal'
 
 const LANDSCAPE_W = 356
 const PORTRAIT_W = 200
@@ -12,10 +13,13 @@ const CARD_H = 200
 
 interface GalleryProps {
   videos: VideoAsset[]
+  processing: boolean
   children?: React.ReactNode
 }
 
 export const Gallery = (props: GalleryProps) => {
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedVideo, setSelectedVideo] = useState('')
   const gtc = useBreakpointValue({
     base: '100%',
     xs: '100%',
@@ -26,7 +30,7 @@ export const Gallery = (props: GalleryProps) => {
   if (props.videos?.length === 0)
     return (
       <div>
-        <Heading>No videos...</Heading>
+        <Heading>{`No videos :(`}</Heading>
       </div>
     )
   return (
@@ -38,6 +42,9 @@ export const Gallery = (props: GalleryProps) => {
       justifyContent="start"
       alignSelf="center"
     >
+      {props.processing && (
+        <Spinner justifySelf="center" thickness="3px" speed="0.9s" emptyColor="gray.900" color="white" size="xl" />
+      )}
       {props.videos.map((video) => (
         <Link
           key={video.id}
@@ -76,23 +83,37 @@ export const Gallery = (props: GalleryProps) => {
                     aria-label="Toggle Self View Camera"
                     variant="ghost"
                     colorScheme="gray"
-                    onClick={(e) => deleteVideo(e, video.id)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setSelectedVideo(video.id)
+                      setModalOpen(true)
+                    }}
                     size={['xs', 'md']}
                     opacity={0.5}
                   />
                 )}
-                {/* <p>{Math.round(video.duration || 0)}s &rarr;</p> */}
               </Box>
             </Box>
           </ChakraLink>
         </Link>
       ))}
+      <Modal
+        isOpen={modalOpen}
+        onAccept={() => {
+          setModalOpen(false)
+          deleteVideo(selectedVideo)
+          setSelectedVideo('')
+        }}
+        onClose={() => {
+          setModalOpen(false)
+          setSelectedVideo('')
+        }}
+      />
     </Box>
   )
 }
 
-const deleteVideo = async (e: any, id: string) => {
-  e.preventDefault()
+const deleteVideo = async (id: string) => {
   console.log('delete video:', id)
   await fetch('/api/delete', {
     method: 'POST',

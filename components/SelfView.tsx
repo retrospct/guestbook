@@ -1,8 +1,8 @@
-import { useEffect, useRef, MutableRefObject } from 'react'
+import { useEffect, useRef, MutableRefObject, useState } from 'react'
 import * as UpChunk from '@mux/upchunk'
+import { Box, Heading, Spinner, Text } from '@chakra-ui/react'
 
 import { mediaTypeSupported } from '../utils'
-
 import styles from '../styles/SelfView.module.css'
 
 const VIDEO_W = 2560
@@ -13,6 +13,11 @@ interface SelfViewProps {
 }
 
 export const SelfView = (props: SelfViewProps) => {
+  const { selfView } = props
+  const [duration, setDuration] = useState<number>(0)
+  const [isRecording, setIsRecording] = useState(false)
+  const [countdown, setCountdown] = useState<number>(3)
+  const [isCounting, setIsCounting] = useState(false)
   // Init a ref for the videoElement and mediaRecorder
   const videoElement: MutableRefObject<HTMLVideoElement | null> = useRef(null)
   const mediaStream: MutableRefObject<MediaStream | null> = useRef(null)
@@ -35,7 +40,7 @@ export const SelfView = (props: SelfViewProps) => {
 
       // Get MediaRecorder type support
       const mimeType = mediaTypeSupported()
-      console.log('mimeType:', mimeType)
+      // console.log('mimeType:', mimeType)
 
       // MediaRecorder options
       const options = {
@@ -75,6 +80,35 @@ export const SelfView = (props: SelfViewProps) => {
       }
     }
 
+    const upload = async (file: File) => {
+      try {
+        const { id, url } = await (await fetch('/api/upload', { method: 'POST' })).json()
+
+        const upload = UpChunk.createUpload({
+          endpoint: url, // Authenticated url
+          file, // File object with your video file’s properties
+          chunkSize: 1024 * 4 // Uploads in 4 MB chunks
+          // chunkSize: 30720 // Uploads the file in ~30 MB chunks
+        })
+
+        // Subscribe to events
+        upload.on('error', (error) => {
+          console.error(error.detail)
+        })
+
+        upload.on('progress', (event) => {
+          console.log('event.detail: ', event.detail)
+        })
+
+        upload.on('success', () => {
+          console.log("Wrap it up, we're done here. 👋")
+          // setProgress(0)
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     const stopStream = () => {
       mediaStream.current?.getTracks().forEach((track) => track.stop())
       // videoElement.current = null
@@ -82,62 +116,63 @@ export const SelfView = (props: SelfViewProps) => {
       mediaRecorder.current = null
     }
 
-    props.selfView ? initMediaStream() : stopStream()
+    selfView ? initMediaStream() : stopStream()
 
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [props.selfView])
+  }, [selfView])
 
-  const upload = async (file: File) => {
-    try {
-      const { id, url } = await (await fetch('/api/upload', { method: 'POST' })).json()
-
-      const upload = UpChunk.createUpload({
-        endpoint: url, // Authenticated url
-        file, // File object with your video file’s properties
-        chunkSize: 1024 * 4 // Uploads in 4 MB chunks
-        // chunkSize: 30720 // Uploads the file in ~30 MB chunks
-      })
-
-      // Subscribe to events
-      upload.on('error', (error) => {
-        console.error(error.detail)
-      })
-
-      upload.on('progress', (progress) => {
-        console.log(progress.detail)
-      })
-
-      upload.on('success', () => {
-        console.log("Wrap it up, we're done here. 👋")
-      })
-    } catch (error) {
-      console.error(error)
+  useEffect(() => {
+    if (isRecording) {
+      setTimeout(() => {
+        setDuration((prev) => prev + 1)
+      }, 1000)
     }
-  }
+  }, [duration, isRecording])
+
+  useEffect(() => {
+    if (isCounting) {
+      setTimeout(() => {
+        setCountdown((prev) => prev - 1)
+      }, 1000)
+    }
+  }, [isCounting, countdown])
 
   const startRecorder = () => {
+    setDuration(0)
+    setIsRecording(true)
     // save a new chunk of data every 500ms
     mediaRecorder.current?.start(500)
-    // stop the video after three seconds
+    // stop the video after x seconds
     setTimeout(() => {
       mediaRecorder.current?.stop()
-    }, 3000)
+      setIsRecording(false)
+    }, 5000)
   }
 
   const onRecordButtonClick = () => {
+    setCountdown(3)
+    setIsCounting(true)
     // TODO: replace this with a hook with cancel to prevent issues
     // TODO: or disable record button while a recording is already active
     setTimeout(() => {
       startRecorder()
-    }, 1000)
+      setIsCounting(false)
+    }, 3000)
   }
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      {props.selfView && (
-        <div style={{ width: '100%', position: 'relative', background: '#000' }}>
+    <Box pos="relative" textAlign="center">
+      {isCounting && (
+        <Box pos="absolute" bottom="calc(50% - 24px)" left="calc(50% - 24px)" color="white" zIndex="1">
+          <Heading color="white" fontSize="128px">
+            {countdown}
+          </Heading>
+        </Box>
+      )}
+      {selfView && (
+        <Box w="100%" pos="relative">
           <video
             autoPlay
             muted
@@ -148,16 +183,45 @@ export const SelfView = (props: SelfViewProps) => {
             style={{ width: '100%', maxWidth: VIDEO_W, height: '100%', maxHeight: VIDEO_H, transform: 'scaleX(-1)' }}
             ref={videoElement}
           />
-          <button className={styles.btnRecord} style={{ top: 'calc(100% - 104px)' }} onClick={onRecordButtonClick}>
-            REC
+          <button
+            disabled={isRecording || isCounting}
+            className={styles.btnRecord}
+            style={{ top: 'calc(100% - 104px)' }}
+            onClick={onRecordButtonClick}
+          >
+            <Heading size="md">{isRecording ? duration : 'REC'}</Heading>
           </button>
-        </div>
+        </Box>
       )}
-      {/* <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-        <button className={styles.btnSolid} onClick={() => setSelfView(!selfView)}>
-          Camera On/Off
-        </button>
-      </div> */}
-    </div>
+    </Box>
   )
 }
+
+// .btnRecord {
+//   background: red;
+//   border: 2px solid #fff;
+//   border-radius: 100%;
+//   color: #fff;
+//   display: inline-block;
+//   font-size: 14px;
+//   font-weight: 400;
+//   line-height: 1.42857;
+//   margin-bottom: 0;
+//   text-align: center;
+//   vertical-align: middle;
+//   white-space: nowrap;
+//   cursor: pointer;
+//   height: 80px;
+//   width: 80px;
+//   position: absolute;
+//   /* top: VIDEO_H - (80 + 24); */
+//   left: calc(50% - 40px);
+// }
+
+// .btnRecord:hover,
+// .btnRecord:active,
+// .btnRecord:focus {
+//   background: deeppink;
+//   color: #333;
+//   border-color: #333;
+// }

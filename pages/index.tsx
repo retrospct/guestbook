@@ -21,6 +21,7 @@ interface HomeProps {
 const Home: NextPage = (props: HomeProps) => {
   const [videos, setVideos] = useState<VideoAsset[]>(props.assets || [])
   const [selfView, setSelfView] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     console.log('subscription: ', supabase.getSubscriptions())
@@ -29,9 +30,13 @@ const Home: NextPage = (props: HomeProps) => {
         .from('activity')
         .on('INSERT', (event) => {
           console.log('event: ', event)
-          if (event.new.type === 'video.asset.created') console.log('video.asset.created...')
+          if (event.new.type === 'video.asset.created') {
+            console.log('video.asset.created...')
+            setIsProcessing(true)
+          }
           if (event.new.type === 'video.asset.ready') {
             console.log('ready...')
+            setIsProcessing(false)
             setVideos((prev) => {
               if (!prev || prev.length === 0) return [event.new.payload]
               return [event.new.payload, ...prev]
@@ -72,7 +77,7 @@ const Home: NextPage = (props: HomeProps) => {
         <Heading as="h1" pt="3rem">
           A Mux Video Guestbook!
         </Heading>
-        {videos?.length > 0 && <Gallery videos={videos} />}
+        {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
       <DarkModeSwitch />

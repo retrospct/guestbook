@@ -8,39 +8,39 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  Text,
-  useDisclosure
+  Text
 } from '@chakra-ui/react'
 
 interface ModalProps extends ChakraModalProps {
   title?: string
   text?: string
-  // isOpen?: boolean
-  // toggleOpen: () => void
-  // onClose: () => void
-  onAcceptCallback?: () => void
+  cancelText?: string
+  acceptText?: string
+  isOpen: boolean
+  onAccept: () => void
+  onClose: () => void
+  children?: React.ReactNode
 }
 
 export const Modal = (props: ModalProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
-      <ChakraModal isOpen={isOpen} onClose={onClose} isCentered>
+      <ChakraModal isOpen={props.isOpen} onClose={props.onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>{props.title ? props.title : 'Delete Video'}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>Delete this video clip?</Text>
+            <Text>{props.text ? props.text : 'Are you sure?'}</Text>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+            <Button variant="ghost" mr={3} onClick={props.onClose}>
+              {props.cancelText ? props.cancelText : 'Cancel'}
             </Button>
-            <Button variant="ghost">Delete</Button>
+            <Button colorScheme="purple" onClick={props.onAccept}>
+              {props.acceptText ? props.acceptText : 'Delete'}
+            </Button>
           </ModalFooter>
         </ModalContent>
       </ChakraModal>
