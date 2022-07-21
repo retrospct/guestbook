@@ -11,7 +11,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
-interface ModalProps extends ChakraModalProps {
+interface ModalProps {
   title?: string
   text?: string
   cancelText?: string
@@ -32,6 +32,7 @@ export const Modal = (props: ModalProps) => {
           <ModalCloseButton />
           <ModalBody>
             <Text>{props.text ? props.text : 'Are you sure?'}</Text>
+            {props.children}
           </ModalBody>
 
           <ModalFooter>

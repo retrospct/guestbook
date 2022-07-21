@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
@@ -11,7 +10,6 @@ import { Footer } from '../../components/Footer'
 import { Head } from '../../components/Head'
 
 import styles from '../../styles/Video.module.css'
-import { useEffect } from 'react'
 
 const Video: NextPage = () => {
   // const [token, setToken] = useState<string | null>(null)
