@@ -33,8 +33,8 @@ export const SelfView = (props: SelfViewProps) => {
         video: {
           width: VIDEO_W,
           height: VIDEO_H,
-          frameRate: { ideal: 30, max: 60 },
-          facingMode: isFrontCamera ? 'user' : 'environment'
+          frameRate: { ideal: 30, max: 60 }
+          // facingMode: isFrontCamera ? 'user' : 'environment'
         }
       }
 
@@ -128,7 +128,7 @@ export const SelfView = (props: SelfViewProps) => {
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [selfView, isFrontCamera])
+  }, [selfView])
 
   useInterval(
     () => {
