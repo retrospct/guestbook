@@ -25,7 +25,7 @@ const Home: NextPage = (props: HomeProps) => {
   useEffect(() => {
     console.log('subscription: ', supabase.getSubscriptions())
     if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
-      supabase
+      const subscription = supabase
         .from('activity')
         .on('INSERT', (event) => {
           console.log('event: ', event)
@@ -46,7 +46,11 @@ const Home: NextPage = (props: HomeProps) => {
           }
         })
         .subscribe()
-        .onClose(() => console.log('subscription closed'))
+
+      subscription.onClose(() => {
+        console.log('subscription closed...')
+        subscription.rejoinUntilConnected()
+      })
       console.log('subscription in IF: ', supabase.getSubscriptions())
     }
     // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
