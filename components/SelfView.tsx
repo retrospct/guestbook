@@ -1,8 +1,10 @@
 import { useEffect, useRef, MutableRefObject, useState } from 'react'
 import * as UpChunk from '@mux/upchunk'
-import { Box, Heading, Spinner, Text } from '@chakra-ui/react'
+import { Box, Heading } from '@chakra-ui/react'
+import { useInterval } from 'react-use'
 
 import { mediaTypeSupported } from '../utils'
+import { SelfieCameraSwitch } from './SelfieCameraSwitch'
 import styles from '../styles/SelfView.module.css'
 
 const VIDEO_W = 2560
@@ -18,6 +20,7 @@ export const SelfView = (props: SelfViewProps) => {
   const [isRecording, setIsRecording] = useState(false)
   const [countdown, setCountdown] = useState<number>(3)
   const [isCounting, setIsCounting] = useState(false)
+  const [isFrontCamera, setIsFrontCamera] = useState(true)
   // Init a ref for the videoElement and mediaRecorder
   const videoElement: MutableRefObject<HTMLVideoElement | null> = useRef(null)
   const mediaStream: MutableRefObject<MediaStream | null> = useRef(null)
@@ -25,14 +28,18 @@ export const SelfView = (props: SelfViewProps) => {
 
   useEffect(() => {
     const initMediaStream = async () => {
-      // Asks system for a MediaStream with audio + video
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const constraints = {
         audio: true,
         video: {
-          width: { min: VIDEO_W },
-          height: { min: VIDEO_H }
+          width: VIDEO_W,
+          height: VIDEO_H,
+          frameRate: { ideal: 30, max: 60 },
+          facingMode: isFrontCamera ? 'user' : 'environment'
         }
-      })
+      }
+
+      // Asks system for a MediaStream with audio + video
+      const stream = await navigator.mediaDevices.getUserMedia(constraints)
 
       // Set video element to stream
       mediaStream.current = stream
@@ -121,23 +128,37 @@ export const SelfView = (props: SelfViewProps) => {
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [selfView])
+  }, [selfView, isFrontCamera])
 
-  useEffect(() => {
-    if (isRecording) {
-      setTimeout(() => {
-        setDuration((prev) => prev + 1)
-      }, 1000)
-    }
-  }, [duration, isRecording])
+  useInterval(
+    () => {
+      setDuration((prev) => prev + 1)
+    },
+    isRecording ? 1000 : null
+  )
 
-  useEffect(() => {
-    if (isCounting) {
-      setTimeout(() => {
-        setCountdown((prev) => prev - 1)
-      }, 1000)
-    }
-  }, [isCounting, countdown])
+  useInterval(
+    () => {
+      setCountdown((prev) => prev - 1)
+    },
+    isCounting ? 1000 : null
+  )
+
+  // useEffect(() => {
+  //   if (isRecording) {
+  //     setTimeout(() => {
+  //       setDuration((prev) => prev + 1)
+  //     }, 1000)
+  //   }
+  // }, [duration, isRecording])
+
+  // useEffect(() => {
+  //   if (isCounting) {
+  //     setTimeout(() => {
+  //       setCountdown((prev) => prev - 1)
+  //     }, 1000)
+  //   }
+  // }, [isCounting, countdown])
 
   const startRecorder = () => {
     setDuration(0)
@@ -164,10 +185,20 @@ export const SelfView = (props: SelfViewProps) => {
   return (
     <Box pos="relative" textAlign="center">
       {isCounting && (
-        <Box pos="absolute" bottom="calc(50% - 24px)" left="calc(50% - 24px)" color="white" zIndex="1">
-          <Heading color="white" fontSize="128px">
-            {countdown}
-          </Heading>
+        <Box w="100%" h="100%" pos="absolute" bottom={0} left={0} color="white" zIndex="1">
+          <Box
+            w="100%"
+            h="100%"
+            bg="blackAlpha.600"
+            pos="relative"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Heading color="white" fontSize="128px">
+              {countdown}
+            </Heading>
+          </Box>
         </Box>
       )}
       {selfView && (
@@ -185,13 +216,22 @@ export const SelfView = (props: SelfViewProps) => {
           <button
             disabled={isRecording || isCounting}
             className={styles.btnRecord}
-            style={{ top: 'calc(100% - 130px)' }}
+            style={{
+              top: 'calc(100% - 130px)',
+              background: isRecording ? 'deeppink' : 'var(--chakra-colors-purple-500)'
+            }}
             onClick={onRecordButtonClick}
           >
             <Heading size="md">{isRecording ? duration : 'REC'}</Heading>
           </button>
+          <SelfieCameraSwitch isFrontCamera={isFrontCamera} toggleFrontCamera={() => !setIsFrontCamera} />
         </Box>
       )}
     </Box>
   )
 }
+
+// let front = false;
+// document.getElementById('flip-button').onclick = function() { front = !front; };
+
+// const constraints = { video: { facingMode: (front? "user" : "environment") } };

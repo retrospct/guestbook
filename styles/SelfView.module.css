@@ -72,7 +72,8 @@
 }
 
 .btnRecord {
-  background: red;
+  /* background: red; */
+  background: var(--chakra-colors-purple-500);
   border: 4px solid #fff;
   border-radius: 100%;
   color: #fff;
