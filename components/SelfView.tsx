@@ -185,7 +185,7 @@ export const SelfView = (props: SelfViewProps) => {
           <button
             disabled={isRecording || isCounting}
             className={styles.btnRecord}
-            style={{ top: 'calc(100% - 104px)' }}
+            style={{ top: 'calc(100% - 130px)' }}
             onClick={onRecordButtonClick}
           >
             <Heading size="md">{isRecording ? duration : 'REC'}</Heading>
