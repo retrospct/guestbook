@@ -3,14 +3,6 @@ import Mux from '@mux/mux-node'
 
 import { VideoAsset } from '../../model'
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '4mb'
-    }
-  }
-}
-
 interface Data {
   assets: VideoAsset[]
 }

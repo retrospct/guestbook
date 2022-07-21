@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { Heading } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
 
-import { supabase } from '../utils/supabase'
+import { supabase } from '../utils'
 import { SelfView } from '../components/SelfView'
 import { Gallery } from '../components/Gallery'
 import { Container } from '../components/Container'
@@ -77,7 +77,7 @@ const Home: NextPage = (props: HomeProps) => {
   )
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(req, res) {
   // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#caching-with-server-side-rendering-ssr
   // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=30')
 
