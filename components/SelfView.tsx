@@ -194,6 +194,7 @@ export const SelfView = (props: SelfViewProps) => {
             display="flex"
             justifyContent="center"
             alignItems="center"
+            // transition="all 0.25s ease-in-out"
           >
             <Heading color="white" fontSize="128px">
               {countdown}
@@ -210,16 +211,22 @@ export const SelfView = (props: SelfViewProps) => {
             controls={false}
             width={VIDEO_W}
             height={VIDEO_H}
-            style={{ width: '100%', maxWidth: VIDEO_W, height: '100%', maxHeight: VIDEO_H, transform: 'scaleX(-1)' }}
+            style={{
+              width: '100%',
+              maxWidth: VIDEO_W,
+              height: '100%',
+              maxHeight: VIDEO_H,
+              transform: isFrontCamera ? 'scaleX(-1)' : 'scaleX(1)'
+            }}
             ref={videoElement}
           />
           <button
             disabled={isRecording || isCounting}
-            className={styles.btnRecord}
             style={{
               top: 'calc(100% - 130px)',
               background: isRecording ? 'deeppink' : 'var(--chakra-colors-purple-500)'
             }}
+            className={styles.btnRecord}
             onClick={onRecordButtonClick}
           >
             <Heading size="md">{isRecording ? duration : 'REC'}</Heading>

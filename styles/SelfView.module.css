@@ -91,12 +91,14 @@
   position: absolute;
   /* top: VIDEO_H - (80 + 24); */
   left: calc(50% - 45px);
+  transition: transform 0.2s ease-in-out;
 }
 
 .btnRecord:hover,
 .btnRecord:active,
 .btnRecord:focus {
-  background: deeppink;
-  color: #333;
-  border-color: #333;
+  transform: scale(1.1);
+  /* background: deeppink; */
+  /* color: #333;
+  border-color: #333; */
 }
