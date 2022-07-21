@@ -1,5 +1,5 @@
 import { Box, Icon, IconButton, Text } from '@chakra-ui/react'
-import { TiCamera, TiCameraOutline } from 'react-icons/ti'
+import { CgSync } from 'react-icons/cg'
 
 interface SelfieCameraSwitchProps {
   isFrontCamera: boolean
@@ -8,11 +8,11 @@ interface SelfieCameraSwitchProps {
 
 export const SelfieCameraSwitch = (props: SelfieCameraSwitchProps) => {
   return (
-    <Box position="fixed" top="100px" right={4} textAlign="center" maxW="60px" lineHeight={1}>
+    <Box position="fixed" top="90px" right={4} textAlign="center" maxW="60px" lineHeight={1.1}>
       <IconButton
-        icon={props.isFrontCamera ? <Icon as={TiCamera} /> : <Icon as={TiCameraOutline} />}
+        icon={<Icon as={CgSync} />}
         aria-label="Swap Front/Rear Camera"
-        colorScheme="purple"
+        colorScheme="gray"
         onClick={props.toggleFrontCamera}
       />
       <Text fontSize="xs">Swap Camera</Text>

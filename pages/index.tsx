@@ -3,14 +3,14 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Heading, Code, Button } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
-import { usePermission, useMediaDevices } from 'react-use'
+import { useMediaDevices } from 'react-use'
 
 import { supabase } from '../utils'
 import { SelfView } from '../components/SelfView'
 import { Gallery } from '../components/Gallery'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
+// import { DarkModeSwitch } from '../components/DarkModeSwitch'
 import { Footer } from '../components/Footer'
 import { VideoAsset } from '../model'
 import { SelfViewSwitch } from '../components/SelfViewSwitch'
@@ -82,13 +82,13 @@ const Home: NextPage = (props: HomeProps) => {
       <Main>
         <SelfView selfView={selfView} />
         {/* <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading> */}
-        <Heading as="h1" pt="3rem">
+        <Heading as="h1" pt={14}>
           A Mux Video Guestbook!
         </Heading>
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
-      <DarkModeSwitch />
+      {/* <DarkModeSwitch /> */}
       <Footer />
       <Button colorScheme="gray" onClick={() => setIsDebug(!isDebug)}>
         Devices
