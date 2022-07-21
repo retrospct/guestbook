@@ -77,7 +77,7 @@ const Home: NextPage = (props: HomeProps) => {
   )
 }
 
-export async function getServerSideProps(req, res) {
+export async function getServerSideProps() {
   // https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props#caching-with-server-side-rendering-ssr
   // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=30')
 

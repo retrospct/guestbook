@@ -78,6 +78,7 @@ export const Gallery = (props: GalleryProps) => {
                     colorScheme="gray"
                     onClick={(e) => deleteVideo(e, video.id)}
                     size={['xs', 'md']}
+                    opacity={0.5}
                   />
                 )}
                 {/* <p>{Math.round(video.duration || 0)}s &rarr;</p> */}
