@@ -24,8 +24,8 @@ const Home: NextPage = (props: HomeProps) => {
   const [selfView, setSelfView] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   // https://developer.mozilla.org/en-US/docs/Web/API/Permissions/query
-  const micPermissions = usePermission({ name: 'microphone' })
-  const cameraPermissions = usePermission({ name: 'camera' })
+  // const micPermissions = usePermission({ name: 'microphone' })
+  // const cameraPermissions = usePermission({ name: 'camera' })
   const mediaDevices: any = useMediaDevices()
   const videoDevices = mediaDevices.devices?.filter((device: any) => device.kind === 'videoinput')
   const audioInputDevices = mediaDevices.devices?.filter((device: any) => device.kind === 'audioinput')
@@ -95,12 +95,12 @@ const Home: NextPage = (props: HomeProps) => {
       </Button>
       {isDebug && (
         <>
-          <Code p={4} borderRadius={6} my={4}>
+          {/* <Code p={4} borderRadius={6} my={4}>
             Mic: {JSON.stringify(micPermissions, null, 2)}
           </Code>
           <Code p={4} borderRadius={6} mb={4}>
             Camera: {JSON.stringify(cameraPermissions, null, 2)}
-          </Code>
+          </Code> */}
           <Code p={4} borderRadius={6} mb={4} maxW="960px">
             <pre>{JSON.stringify(videoDevices, null, 2)}</pre>
           </Code>
