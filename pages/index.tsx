@@ -95,10 +95,10 @@ const Home: NextPage = (props: HomeProps) => {
       </Head>
       <Main>
         <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
-        {/* <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading> */}
-        <Heading as="h1" pt={14}>
+        <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading>
+        {/* <Heading as="h1" pt={14}>
           A Mux Video Guestbook!
-        </Heading>
+        </Heading> */}
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
