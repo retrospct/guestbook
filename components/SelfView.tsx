@@ -14,10 +14,11 @@ const VIDEO_H = 1440
 
 interface SelfViewProps {
   selfView: boolean
+  updateSelfView: (show: boolean) => void
 }
 
 export const SelfView = (props: SelfViewProps) => {
-  const { selfView } = props
+  const { selfView, updateSelfView } = props
   const [duration, setDuration] = useState<number>(0)
   const [isRecording, setIsRecording] = useState(false)
   const [countdown, setCountdown] = useState<number>(3)
@@ -134,36 +135,12 @@ export const SelfView = (props: SelfViewProps) => {
     if (isMobile) {
       document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
-          stopStream()
+          updateSelfView(false)
         } else {
-          initMediaStream()
+          updateSelfView(true)
         }
       })
     }
-
-    console.log('videoDevice', videoDevice)
-    console.log('audioInputDevice', audioInputDevice)
-
-    // const updateSelectedDevices = () => {
-    //   console.log('update1?')
-    //   console.log('audioInputDevice', audioInputDevice)
-    //   console.log('videoDevice', videoDevice)
-    //   console.log('update2?')
-    //   initMediaStream({
-    //     audio: { deviceId: { exact: audioInputDevice } },
-    //     video: { ...defaultConstraints.video, deviceId: { exact: videoDevice } }
-    //   })
-    //   // const tracks = mediaStream.current?.getTracks()
-    //   // tracks?.forEach((track: MediaStreamTrack) => {
-    //   //   if (track.kind === 'video' && videoDevice)
-    //   //     track.applyConstraints({ ...defaultConstraints.video, deviceId: { exact: videoDevice } })
-    //   //   if (track.kind === 'audio' && audioInputDevice)
-    //   //     track.applyConstraints({ deviceId: { exact: audioInputDevice } })
-    //   // })
-    //   // setUpdateTracks(false)
-    // }
-
-    // updateSelectedDevices()
 
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()

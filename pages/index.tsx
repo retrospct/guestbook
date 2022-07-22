@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { Heading, Code, Button } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
 import { useMediaDevices } from 'react-use'
+import { isMobile } from 'react-device-detect'
 
 import { supabase } from '../utils'
 import { SelfView } from '../components/SelfView'
@@ -64,6 +65,19 @@ const Home: NextPage = (props: HomeProps) => {
         console.log('subscription closed...')
         subscription.rejoinUntilConnected()
       })
+
+      if (isMobile) {
+        document.addEventListener('visibilitychange', async () => {
+          if (document.visibilityState === 'hidden') {
+            console.log('browser hidden visibility')
+          } else {
+            console.log('browser back in view')
+            subscription.rejoinUntilConnected()
+          }
+          console.log('subscription in visibility: ', supabase.getSubscriptions())
+        })
+      }
+
       console.log('subscription in IF: ', supabase.getSubscriptions())
     }
     // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
@@ -80,7 +94,7 @@ const Home: NextPage = (props: HomeProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <SelfView selfView={selfView} />
+        <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
         {/* <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading> */}
         <Heading as="h1" pt={14}>
           A Mux Video Guestbook!
@@ -95,12 +109,6 @@ const Home: NextPage = (props: HomeProps) => {
       </Button>
       {isDebug && (
         <>
-          {/* <Code p={4} borderRadius={6} my={4}>
-            Mic: {JSON.stringify(micPermissions, null, 2)}
-          </Code>
-          <Code p={4} borderRadius={6} mb={4}>
-            Camera: {JSON.stringify(cameraPermissions, null, 2)}
-          </Code> */}
           <Code p={4} borderRadius={6} mb={4} maxW="960px">
             <pre>{JSON.stringify(videoDevices, null, 2)}</pre>
           </Code>
