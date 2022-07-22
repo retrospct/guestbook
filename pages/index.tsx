@@ -67,9 +67,10 @@ const Home: NextPage = (props: HomeProps) => {
         document.addEventListener('visibilitychange', async () => {
           if (document.visibilityState === 'hidden') {
             console.log('browser hidden visibility')
+            subscription.unsubscribe()
           } else {
             console.log('browser back in view')
-            subscription.rejoinUntilConnected()
+            subscription.subscribe()
             updateVideos()
           }
           console.log('subscription in visibility: ', supabase.getSubscriptions())
