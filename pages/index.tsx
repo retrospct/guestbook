@@ -61,6 +61,7 @@ const Home: NextPage = (props: HomeProps) => {
       subscription.onClose(() => {
         console.log('subscription closed...')
         subscription.rejoinUntilConnected()
+        console.log('subscription in closed: ', supabase.getSubscriptions())
       })
 
       if (isMobile) {
@@ -69,7 +70,7 @@ const Home: NextPage = (props: HomeProps) => {
             console.log('browser hidden visibility')
           } else {
             console.log('browser back in view')
-            if (!subscription.isJoining()) subscription.rejoinUntilConnected()
+            // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
             updateVideos()
           }
           console.log('subscription in visibility: ', supabase.getSubscriptions())
