@@ -2,7 +2,6 @@ import { Box, Icon, IconButton, Text } from '@chakra-ui/react'
 import { CgSync } from 'react-icons/cg'
 
 interface SelfieCameraSwitchProps {
-  isFrontCamera: boolean
   toggleFrontCamera: () => void
 }
 

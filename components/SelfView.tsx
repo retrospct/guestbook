@@ -2,9 +2,11 @@ import { useEffect, useRef, MutableRefObject, useState } from 'react'
 import * as UpChunk from '@mux/upchunk'
 import { Box, Heading } from '@chakra-ui/react'
 import { useInterval } from 'react-use'
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect'
 
 import { mediaTypeSupported } from '../utils'
 import { SelfieCameraSwitch } from './SelfieCameraSwitch'
+import { DeviceSelect } from './DeviceSelect'
 import styles from '../styles/SelfView.module.css'
 
 const VIDEO_W = 2560
@@ -125,6 +127,16 @@ export const SelfView = (props: SelfViewProps) => {
 
     selfView ? initMediaStream() : stopStream()
 
+    if (isMobile) {
+      document.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState === 'hidden') {
+          stopStream()
+        } else {
+          initMediaStream()
+        }
+      })
+    }
+
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
@@ -143,22 +155,6 @@ export const SelfView = (props: SelfViewProps) => {
     },
     isCounting ? 1000 : null
   )
-
-  // useEffect(() => {
-  //   if (isRecording) {
-  //     setTimeout(() => {
-  //       setDuration((prev) => prev + 1)
-  //     }, 1000)
-  //   }
-  // }, [duration, isRecording])
-
-  // useEffect(() => {
-  //   if (isCounting) {
-  //     setTimeout(() => {
-  //       setCountdown((prev) => prev - 1)
-  //     }, 1000)
-  //   }
-  // }, [isCounting, countdown])
 
   const startRecorder = () => {
     setDuration(0)
@@ -231,17 +227,14 @@ export const SelfView = (props: SelfViewProps) => {
           >
             <Heading size="md">{isRecording ? duration : 'REC'}</Heading>
           </button>
-          <SelfieCameraSwitch
-            isFrontCamera={isFrontCamera}
-            toggleFrontCamera={() => setIsFrontCamera(!isFrontCamera)}
-          />
+          <MobileView>
+            <SelfieCameraSwitch toggleFrontCamera={() => setIsFrontCamera(!isFrontCamera)} />
+          </MobileView>
+          <BrowserView>
+            <DeviceSelect mediaStream={videoElement.current} />
+          </BrowserView>
         </Box>
       )}
     </Box>
   )
 }
-
-// let front = false;
-// document.getElementById('flip-button').onclick = function() { front = !front; };
-
-// const constraints = { video: { facingMode: (front? "user" : "environment") } };
