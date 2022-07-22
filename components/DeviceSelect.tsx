@@ -40,7 +40,7 @@ export const DeviceSelect = (props: DeviceSelectProps) => {
   }, [mediaDevices])
 
   return (
-    <Box position="fixed" top="90px" right={4} w="60px" textAlign="center" lineHeight={1.1}>
+    <Box>
       <Popover>
         <PopoverTrigger>
           <div>

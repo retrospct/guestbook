@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Heading, Code, Button } from '@chakra-ui/react'
+import { Heading } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
-import { useMediaDevices } from 'react-use'
 import { isMobile } from 'react-device-detect'
 
 import { supabase } from '../utils'
@@ -24,15 +23,13 @@ const Home: NextPage = (props: HomeProps) => {
   const [videos, setVideos] = useState<VideoAsset[]>(props.assets || [])
   const [selfView, setSelfView] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
-  // https://developer.mozilla.org/en-US/docs/Web/API/Permissions/query
-  // const micPermissions = usePermission({ name: 'microphone' })
-  // const cameraPermissions = usePermission({ name: 'camera' })
-  const mediaDevices: any = useMediaDevices()
-  const videoDevices = mediaDevices.devices?.filter((device: any) => device.kind === 'videoinput')
-  const audioInputDevices = mediaDevices.devices?.filter((device: any) => device.kind === 'audioinput')
-  const [isDebug, setIsDebug] = useState(false)
 
   useEffect(() => {
+    const updateVideos = async () => {
+      console.log('updating videos...')
+      const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
+      setVideos(data.assets)
+    }
     console.log('subscription: ', supabase.getSubscriptions())
     if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
       const subscription = supabase
@@ -73,6 +70,7 @@ const Home: NextPage = (props: HomeProps) => {
           } else {
             console.log('browser back in view')
             subscription.rejoinUntilConnected()
+            updateVideos()
           }
           console.log('subscription in visibility: ', supabase.getSubscriptions())
         })
@@ -95,28 +93,14 @@ const Home: NextPage = (props: HomeProps) => {
       </Head>
       <Main>
         <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
-        <Heading as="h1">Leah&apos;s Birthday Guestbook!</Heading>
-        {/* <Heading as="h1" pt={14}>
-          A Mux Video Guestbook!
-        </Heading> */}
+        <Heading as="h1" pt={14}>
+          Leah&apos;s Birthday Guestbook!
+        </Heading>
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
       {/* <DarkModeSwitch /> */}
       <Footer />
-      <Button colorScheme="gray" onClick={() => setIsDebug(!isDebug)}>
-        Devices
-      </Button>
-      {isDebug && (
-        <>
-          <Code p={4} borderRadius={6} mb={4} maxW="960px">
-            <pre>{JSON.stringify(videoDevices, null, 2)}</pre>
-          </Code>
-          <Code p={4} borderRadius={6} maxW="960px">
-            <pre>{JSON.stringify(audioInputDevices, null, 2)}</pre>
-          </Code>
-        </>
-      )}
     </Container>
   )
 }
