@@ -87,14 +87,14 @@ const Home: NextPage = (props: HomeProps) => {
   return (
     <Container>
       <Head>
-        <title>🐙 Leah&apos;s Guestbook 👾</title>
+        <title>🐙 Leah&apos;s Guestbook</title>
         <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
         <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
-        <Heading as="h1" pt={14}>
-          🐙 Leah&apos;s Birthday Guestbook! 👾
+        <Heading as="h1" pt={14} textAlign="center">
+          🐙 Leah&apos;s Birthday Guestbook!
         </Heading>
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
