@@ -9,26 +9,28 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  // PopoverFooter,
+  PopoverFooter,
   PopoverArrow,
   PopoverCloseButton,
   Select,
   Heading
 } from '@chakra-ui/react'
-import { CgPolaroid, CgChevronDown, CgChevronDownO } from 'react-icons/cg'
-import { useMediaDevices } from 'react-use'
+import { CgChevronDown, CgChevronDownO } from 'react-icons/cg'
+import { useMediaDevices, useLocalStorage } from 'react-use'
 
 interface DeviceSelectProps {
-  devices?: MediaDeviceInfo[]
-  mediaStream?: any
+  updateAudioInput: (deviceId: string) => void
+  updateVideo: (deviceId: string) => void
 }
 
 export const DeviceSelect = (props: DeviceSelectProps) => {
   const mediaDevices: any = useMediaDevices()
   const [audioInputDevices, setAudioInputDevices] = useState<MediaDeviceInfo[] | null>(null)
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[] | null>(null)
-  const [selectedAudioInput, setSelectedAudioInput] = useState<string>()
-  const [selectedVideoDevice, setSelectedVideoDevice] = useState<string>()
+  // const [selectedAudioInput, setSelectedAudioInput] = useState<string>()
+  // const [selectedVideoDevice, setSelectedVideoDevice] = useState<string>()
+  const [selectedAudioInput, setSelectedAudioInput] = useLocalStorage<string>('audioInputDevice')
+  const [selectedVideoDevice, setSelectedVideoDevice] = useLocalStorage<string>('videoDevice')
 
   useEffect(() => {
     if (mediaDevices) {
@@ -37,15 +39,8 @@ export const DeviceSelect = (props: DeviceSelectProps) => {
     }
   }, [mediaDevices])
 
-  useEffect(() => {
-    if (selectedVideoDevice) {
-      console.log('selectedVideoDevice', selectedVideoDevice)
-      props.mediaStream?.current?.setSinkId(selectedVideoDevice) // FIXME: this does not work
-    }
-  }, [selectedVideoDevice, props.mediaStream])
-
   return (
-    <Box position="fixed" top="90px" right={6} maxW="60px" textAlign="left" lineHeight={1.1}>
+    <Box position="fixed" top="90px" right={4} w="60px" textAlign="center" lineHeight={1.1}>
       <Popover>
         <PopoverTrigger>
           <div>
@@ -53,7 +48,7 @@ export const DeviceSelect = (props: DeviceSelectProps) => {
             <Text fontSize="xs">Devices</Text>
           </div>
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent textAlign="left">
           <PopoverArrow />
           <PopoverCloseButton p={7} />
           <PopoverHeader p={6}>Device Settings</PopoverHeader>
@@ -64,9 +59,12 @@ export const DeviceSelect = (props: DeviceSelectProps) => {
               </Heading>
               <Select
                 icon={<CgChevronDown />}
-                value={selectedVideoDevice}
+                value={selectedVideoDevice ? selectedVideoDevice : 'default'}
                 placeholder="Select camera"
-                onChange={(e) => setSelectedVideoDevice(e.target.value)}
+                onChange={(e) => {
+                  setSelectedVideoDevice(e.target.value)
+                  props.updateVideo(e.target.value)
+                }}
               >
                 {videoDevices?.map((device: MediaDeviceInfo) => (
                   <option key={device.deviceId} value={device.deviceId}>
@@ -81,9 +79,12 @@ export const DeviceSelect = (props: DeviceSelectProps) => {
               </Heading>
               <Select
                 icon={<CgChevronDown />}
-                value={selectedAudioInput}
+                value={selectedAudioInput ? selectedAudioInput : 'default'}
                 placeholder="Select audio input"
-                onChange={(e) => setSelectedAudioInput(e.target.value)}
+                onChange={(e) => {
+                  setSelectedAudioInput(e.target.value)
+                  props.updateAudioInput(e.target.value)
+                }}
               >
                 {audioInputDevices?.map((device: MediaDeviceInfo) => (
                   <option key={device.deviceId} value={device.deviceId}>
@@ -93,6 +94,9 @@ export const DeviceSelect = (props: DeviceSelectProps) => {
               </Select>
             </Box>
           </PopoverBody>
+          <PopoverFooter py={5} px={6} maxW="100%">
+            No devices? Refresh the page...
+          </PopoverFooter>
         </PopoverContent>
       </Popover>
     </Box>

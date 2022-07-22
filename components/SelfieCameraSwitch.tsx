@@ -7,7 +7,7 @@ interface SelfieCameraSwitchProps {
 
 export const SelfieCameraSwitch = (props: SelfieCameraSwitchProps) => {
   return (
-    <Box position="fixed" top="90px" right={4} textAlign="center" maxW="60px" lineHeight={1.1}>
+    <Box position="fixed" top="90px" right={4} textAlign="center" w="60px" lineHeight={1.1}>
       <IconButton
         icon={<Icon as={CgSync} />}
         aria-label="Swap Front/Rear Camera"

@@ -1,8 +1,8 @@
 import { useEffect, useRef, MutableRefObject, useState } from 'react'
 import * as UpChunk from '@mux/upchunk'
 import { Box, Heading } from '@chakra-ui/react'
-import { useInterval } from 'react-use'
-import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect'
+import { useInterval, useLocalStorage } from 'react-use'
+import { isBrowser, isMobile } from 'react-device-detect'
 
 import { mediaTypeSupported } from '../utils'
 import { SelfieCameraSwitch } from './SelfieCameraSwitch'
@@ -23,6 +23,11 @@ export const SelfView = (props: SelfViewProps) => {
   const [countdown, setCountdown] = useState<number>(3)
   const [isCounting, setIsCounting] = useState(false)
   const [isFrontCamera, setIsFrontCamera] = useState(true)
+  const [audioInputDeviceLocal] = useLocalStorage('audioInputDevice')
+  const [videoDeviceLocal] = useLocalStorage('videoDevice')
+  const [audioInputDevice, setAudioInputDevice] = useState(audioInputDeviceLocal)
+  const [videoDevice, setVideoDevice] = useState(videoDeviceLocal)
+  // const [updateTracks, setUpdateTracks] = useState(false)
   // Init a ref for the videoElement and mediaRecorder
   const videoElement: MutableRefObject<HTMLVideoElement | null> = useRef(null)
   const mediaStream: MutableRefObject<MediaStream | null> = useRef(null)
@@ -30,18 +35,17 @@ export const SelfView = (props: SelfViewProps) => {
 
   useEffect(() => {
     const initMediaStream = async () => {
-      const constraints = {
-        audio: true,
+      // Asks system for a MediaStream with audio + video
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: { exact: audioInputDevice as string } },
         video: {
           width: VIDEO_W,
           height: VIDEO_H,
           frameRate: { ideal: 30, max: 60 },
-          facingMode: isFrontCamera ? 'user' : 'environment'
+          facingMode: isFrontCamera ? 'user' : 'environment',
+          deviceId: { exact: videoDevice as string }
         }
-      }
-
-      // Asks system for a MediaStream with audio + video
-      const stream = await navigator.mediaDevices.getUserMedia(constraints)
+      })
 
       // Set video element to stream
       mediaStream.current = stream
@@ -137,10 +141,34 @@ export const SelfView = (props: SelfViewProps) => {
       })
     }
 
+    console.log('videoDevice', videoDevice)
+    console.log('audioInputDevice', audioInputDevice)
+
+    // const updateSelectedDevices = () => {
+    //   console.log('update1?')
+    //   console.log('audioInputDevice', audioInputDevice)
+    //   console.log('videoDevice', videoDevice)
+    //   console.log('update2?')
+    //   initMediaStream({
+    //     audio: { deviceId: { exact: audioInputDevice } },
+    //     video: { ...defaultConstraints.video, deviceId: { exact: videoDevice } }
+    //   })
+    //   // const tracks = mediaStream.current?.getTracks()
+    //   // tracks?.forEach((track: MediaStreamTrack) => {
+    //   //   if (track.kind === 'video' && videoDevice)
+    //   //     track.applyConstraints({ ...defaultConstraints.video, deviceId: { exact: videoDevice } })
+    //   //   if (track.kind === 'audio' && audioInputDevice)
+    //   //     track.applyConstraints({ deviceId: { exact: audioInputDevice } })
+    //   // })
+    //   // setUpdateTracks(false)
+    // }
+
+    // updateSelectedDevices()
+
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [selfView, isFrontCamera])
+  }, [selfView, isFrontCamera, videoDevice, audioInputDevice])
 
   useInterval(
     () => {
@@ -227,12 +255,13 @@ export const SelfView = (props: SelfViewProps) => {
           >
             <Heading size="md">{isRecording ? duration : 'REC'}</Heading>
           </button>
-          <MobileView>
-            <SelfieCameraSwitch toggleFrontCamera={() => setIsFrontCamera(!isFrontCamera)} />
-          </MobileView>
-          <BrowserView>
-            <DeviceSelect mediaStream={videoElement.current} />
-          </BrowserView>
+          {isMobile && <SelfieCameraSwitch toggleFrontCamera={() => setIsFrontCamera(!isFrontCamera)} />}
+          {isBrowser && (
+            <DeviceSelect
+              updateAudioInput={(deviceId: string) => setAudioInputDevice(deviceId)}
+              updateVideo={(deviceId: string) => setVideoDevice(deviceId)}
+            />
+          )}
         </Box>
       )}
     </Box>

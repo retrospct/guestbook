@@ -8,7 +8,7 @@ interface SelfViewSwitchProps {
 
 export const SelfViewSwitch = (props: SelfViewSwitchProps) => {
   return (
-    <Box position="fixed" top={4} right={4} textAlign="center" maxW="60px" lineHeight={1.1}>
+    <Box position="fixed" top={4} right={4} textAlign="center" w="60px" lineHeight={1.1}>
       <IconButton
         icon={props.selfView ? <Icon as={TiCamera} /> : <Icon as={TiCameraOutline} />}
         aria-label="Toggle Self View Camera"
