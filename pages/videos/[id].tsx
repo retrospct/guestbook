@@ -2,10 +2,10 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import MuxPlayer from '@mux-elements/mux-player-react'
+import { Box } from '@chakra-ui/react'
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { DarkModeSwitch } from '../../components/DarkModeSwitch'
 import { Footer } from '../../components/Footer'
 import { Head } from '../../components/Head'
 
@@ -31,20 +31,21 @@ const Video: NextPage = () => {
   // }, [id])
 
   return (
-    <Container height="100vh">
+    <Container>
       <Head title={`Leah&apos;s Guestbook | Video ${id}`} />
 
-      <Main height="full">
-        <div className={styles.playerHeader}>
+      {/* <Main> */}
+      <Box display="flex" flexDirection="column" justifyContent="flex-start" alignItems="center" maxW="1920px">
+        <Box mt={10} mb={6} alignSelf="flex-start">
           <button type="button" onClick={() => router.push('/')}>
             &larr; Back
           </button>
-        </div>
-        <main className={styles.muxPlayer}>
+        </Box>
+        <Box w="fit-content">
           {!id || Array.isArray(id) ? <h2>Opps! No video ID was provided...</h2> : <VideoPlayer id={id} />}
-        </main>
-      </Main>
-      <DarkModeSwitch />
+        </Box>
+      </Box>
+      {/* </Main> */}
       <Footer />
       <Script
         id="video-player-chromecast"
@@ -60,7 +61,7 @@ export default Video
 const VideoPlayer = ({ id, ...rest }: { id: string }) => (
   <MuxPlayer
     {...rest}
-    style={{ height: '100%', maxWidth: '100%' }}
+    style={{ maxHeight: '100vh', maxWidth: '100%' }}
     streamType="on-demand"
     playbackId={id}
     metadata={{
