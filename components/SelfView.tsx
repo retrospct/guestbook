@@ -2,7 +2,7 @@ import { useEffect, useRef, MutableRefObject, useState } from 'react'
 import * as UpChunk from '@mux/upchunk'
 import { Box, Heading } from '@chakra-ui/react'
 import { useInterval, useLocalStorage } from 'react-use'
-import { isMobile } from 'react-device-detect'
+import { isMobile, isBrowser } from 'react-device-detect'
 
 import { mediaTypeSupported } from '../utils'
 import { SelfieCameraSwitch } from './SelfieCameraSwitch'
@@ -242,11 +242,13 @@ export const SelfView = (props: SelfViewProps) => {
             w="60px"
             lineHeight={1.1}
           >
-            <SelfieCameraSwitch toggleFrontCamera={() => setIsFrontCamera(!isFrontCamera)} />
-            <DeviceSelect
-              updateAudioInput={(deviceId: string) => setAudioInputDevice(deviceId)}
-              updateVideo={(deviceId: string) => setVideoDevice(deviceId)}
-            />
+            {isMobile && <SelfieCameraSwitch toggleFrontCamera={() => setIsFrontCamera(!isFrontCamera)} />}
+            {isBrowser && (
+              <DeviceSelect
+                updateAudioInput={(deviceId: string) => setAudioInputDevice(deviceId)}
+                updateVideo={(deviceId: string) => setVideoDevice(deviceId)}
+              />
+            )}
           </Box>
         </Box>
       )}
