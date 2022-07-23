@@ -25,11 +25,11 @@ const Home: NextPage = (props: HomeProps) => {
   const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
-    const updateVideos = async () => {
-      console.log('updating videos...')
-      const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
-      setVideos(data.assets)
-    }
+    // const updateVideos = async () => {
+    //   console.log('updating videos...')
+    //   const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
+    //   setVideos(data.assets)
+    // }
     console.log('subscription: ', supabase.getSubscriptions())
     if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
       const subscription = supabase
@@ -70,8 +70,11 @@ const Home: NextPage = (props: HomeProps) => {
             console.log('browser hidden visibility')
           } else {
             console.log('browser back in view')
-            if (!subscription.isJoining()) subscription.rejoinUntilConnected()
-            await updateVideos()
+            // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
+            // await updateVideos()
+            console.log('updating videos...')
+            const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
+            setVideos(data.assets)
           }
           console.log('subscription in visibility: ', supabase.getSubscriptions())
         })
