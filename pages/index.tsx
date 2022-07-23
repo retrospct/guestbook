@@ -94,7 +94,10 @@ const Home: NextPage = (props: HomeProps) => {
     <Container>
       <Head>
         <title>🐙 Leah&apos;s Guestbook</title>
-        <meta name="description" content="A guestbook app made using React, TypeScript, Next.js, and Mux Video." />
+        <meta
+          name="description"
+          content="Record a quick clip or more to say hello! Made with React, TypeScript, Next.js, and Mux Video."
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
