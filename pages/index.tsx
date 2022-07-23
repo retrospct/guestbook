@@ -34,7 +34,7 @@ const Home: NextPage = (props: HomeProps) => {
     if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
       const subscription = supabase
         .from('activity')
-        .on('INSERT', (event) => {
+        .on('*', (event) => {
           console.log('event: ', event)
           if (event.new.type === 'video.asset.created') {
             console.log('video.asset.created...')
