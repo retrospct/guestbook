@@ -143,11 +143,11 @@ export const SelfView = (props: SelfViewProps) => {
         if (document.visibilityState === 'hidden') {
           updateSelfView(false)
         } else {
-          if (selfView) updateSelfView(true)
+          updateSelfView(true)
         }
       })
     }
-  }, [selfView, updateSelfView])
+  }, [updateSelfView])
 
   useInterval(
     () => {
