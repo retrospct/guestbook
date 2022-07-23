@@ -14,11 +14,11 @@ const VIDEO_H = 1440
 
 interface SelfViewProps {
   selfView: boolean
-  updateSelfView: (show: boolean) => void
+  // updateSelfView: (show: boolean) => void
 }
 
 export const SelfView = (props: SelfViewProps) => {
-  const { selfView, updateSelfView } = props
+  // const { selfView } = props
   const [duration, setDuration] = useState<number>(0)
   const [isRecording, setIsRecording] = useState(false)
   const [countdown, setCountdown] = useState<number>(3)
@@ -130,24 +130,24 @@ export const SelfView = (props: SelfViewProps) => {
       mediaRecorder.current = null
     }
 
-    selfView ? initMediaStream() : stopStream()
+    props.selfView ? initMediaStream() : stopStream()
 
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [selfView, isFrontCamera, videoDevice, audioInputDevice])
+  }, [props.selfView, isFrontCamera, videoDevice, audioInputDevice])
 
-  useEffect(() => {
-    if (isMobile) {
-      document.addEventListener('visibilitychange', async () => {
-        if (document.visibilityState === 'hidden') {
-          updateSelfView(false)
-        } else {
-          updateSelfView(true)
-        }
-      })
-    }
-  }, [updateSelfView])
+  // useEffect(() => {
+  //   if (isMobile) {
+  //     document.addEventListener('visibilitychange', async () => {
+  //       if (document.visibilityState === 'hidden') {
+  //         updateSelfView(false)
+  //       } else {
+  //         updateSelfView(true)
+  //       }
+  //     })
+  //   }
+  // }, [updateSelfView])
 
   useInterval(
     () => {
@@ -205,7 +205,7 @@ export const SelfView = (props: SelfViewProps) => {
           </Box>
         </Box>
       )}
-      {selfView && (
+      {props.selfView && (
         <Box w="100%" pos="relative">
           <video
             autoPlay
@@ -230,7 +230,7 @@ export const SelfView = (props: SelfViewProps) => {
               background: isRecording ? 'deeppink' : 'var(--chakra-colors-purple-500)'
             }}
             className={styles.btnRecord}
-            onClick={onRecordButtonClick}
+            onClick={() => onRecordButtonClick()}
           >
             <Heading size="md">{isRecording ? duration : 'REC'}</Heading>
           </button>

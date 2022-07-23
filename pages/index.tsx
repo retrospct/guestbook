@@ -70,20 +70,16 @@ const Home: NextPage = (props: HomeProps) => {
 
   useEffect(() => {
     if (isMobile) {
-      const updateVideos = async () => {
-        console.log('updating videos...')
-        const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
-        setVideos(data.assets)
-      }
-
       document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
           console.log('browser hidden visibility')
+          setSelfView(false)
         } else {
           console.log('browser back in view')
-          // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
-          // await updateVideos()
-          await updateVideos()
+          console.log('updating videos...')
+          const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
+          setVideos(data.assets)
+          // setSelfView(true)
         }
         console.log('subscription in visibility: ', supabase.getSubscriptions())
       })
@@ -101,7 +97,7 @@ const Home: NextPage = (props: HomeProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
+        <SelfView selfView={selfView} />
         <Heading as="h1" pt={14} textAlign="center">
           🐙 Leah&apos;s Birthday Guestbook!
         </Heading>
