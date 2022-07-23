@@ -132,6 +132,12 @@ export const SelfView = (props: SelfViewProps) => {
 
     selfView ? initMediaStream() : stopStream()
 
+    return () => {
+      if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
+    }
+  }, [selfView, isFrontCamera, videoDevice, audioInputDevice])
+
+  useEffect(() => {
     if (isMobile) {
       document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
@@ -141,11 +147,7 @@ export const SelfView = (props: SelfViewProps) => {
         }
       })
     }
-
-    return () => {
-      if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
-    }
-  }, [selfView, isFrontCamera, videoDevice, audioInputDevice])
+  }, [updateSelfView])
 
   useInterval(
     () => {
