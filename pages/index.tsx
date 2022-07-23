@@ -71,7 +71,7 @@ const Home: NextPage = (props: HomeProps) => {
           } else {
             console.log('browser back in view')
             // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
-            updateVideos()
+            await updateVideos()
           }
           console.log('subscription in visibility: ', supabase.getSubscriptions())
         })
