@@ -64,20 +64,20 @@ const Home: NextPage = (props: HomeProps) => {
         console.log('subscription in closed: ', supabase.getSubscriptions())
       })
 
-      if (isMobile) {
-        document.addEventListener('visibilitychange', async () => {
-          if (document.visibilityState === 'hidden') {
-            console.log('browser hidden visibility')
-          } else {
-            console.log('browser back in view')
-            // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
-            await updateVideos()
-          }
-          console.log('subscription in visibility: ', supabase.getSubscriptions())
-        })
-      }
-
       console.log('subscription in IF: ', supabase.getSubscriptions())
+    }
+
+    if (isMobile) {
+      document.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState === 'hidden') {
+          console.log('browser hidden visibility')
+        } else {
+          console.log('browser back in view')
+          // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
+          await updateVideos()
+        }
+        console.log('subscription in visibility: ', supabase.getSubscriptions())
+      })
     }
     // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
     // return () => {
