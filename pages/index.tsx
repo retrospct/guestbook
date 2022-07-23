@@ -105,8 +105,11 @@ const Home: NextPage = (props: HomeProps) => {
         <Heading as="h1" pt={14} textAlign="center">
           🐙 Leah&apos;s Birthday Guestbook!
         </Heading>
-        <Text>
+        <Text textAlign="center" px={2}>
           Record a quick clip or more to say hello! We&apos;ll have a photobooth setup during the party as well.
+        </Text>
+        <Text textAlign="center" style={{ marginTop: '0.5rem' }} fontSize="0.75rem" px={2}>
+          Be careful not to delete the wrong clips please :)
         </Text>
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
