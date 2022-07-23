@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Heading } from '@chakra-ui/react'
+import { Heading, Text } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
 import { isMobile } from 'react-device-detect'
 
@@ -102,6 +102,9 @@ const Home: NextPage = (props: HomeProps) => {
         <Heading as="h1" pt={14} textAlign="center">
           🐙 Leah&apos;s Birthday Guestbook!
         </Heading>
+        <Text>
+          Record a quick clip or more to say hello! We&apos;ll have a photobooth setup during the party as well.
+        </Text>
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
