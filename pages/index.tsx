@@ -25,11 +25,6 @@ const Home: NextPage = (props: HomeProps) => {
   const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
-    const updateVideos = async () => {
-      console.log('updating videos...')
-      const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
-      setVideos(data.assets)
-    }
     console.log('subscription: ', supabase.getSubscriptions())
     if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
       const subscription = supabase
@@ -67,6 +62,13 @@ const Home: NextPage = (props: HomeProps) => {
       console.log('subscription in IF: ', supabase.getSubscriptions())
     }
 
+    // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
+    // return () => {
+    //   supabase.removeAllSubscriptions()
+    // }
+  }, [])
+
+  useEffect(() => {
     if (isMobile) {
       document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
@@ -74,15 +76,17 @@ const Home: NextPage = (props: HomeProps) => {
         } else {
           console.log('browser back in view')
           // if (!subscription.isJoining()) subscription.rejoinUntilConnected()
+          // await updateVideos()
+          const updateVideos = async () => {
+            console.log('updating videos...')
+            const data = await (await fetch('/api/videos', { headers: { 'Content-Type': 'application/json' } })).json()
+            setVideos(data.assets)
+          }
           await updateVideos()
         }
         console.log('subscription in visibility: ', supabase.getSubscriptions())
       })
     }
-    // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
-    // return () => {
-    //   supabase.removeAllSubscriptions()
-    // }
   }, [])
 
   return (
