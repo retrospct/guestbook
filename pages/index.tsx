@@ -73,7 +73,7 @@ const Home: NextPage = (props: HomeProps) => {
       document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
           console.log('browser hidden visibility')
-          setSelfView(false)
+          // setSelfView(false)
         } else {
           console.log('browser back in view')
           console.log('updating videos...')
@@ -97,7 +97,7 @@ const Home: NextPage = (props: HomeProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <SelfView selfView={selfView} />
+        <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
         <Heading as="h1" pt={14} textAlign="center">
           🐙 Leah&apos;s Birthday Guestbook!
         </Heading>
@@ -105,7 +105,7 @@ const Home: NextPage = (props: HomeProps) => {
           Record a quick clip or more to say hello! We&apos;ll have a photobooth setup during the party as well.
         </Text>
         <Text textAlign="center" style={{ marginTop: '0.5rem' }} fontSize="0.75rem" px={2}>
-          Be careful not to delete the wrong clips please :)
+          Be careful not to delete the wrong clips please.
         </Text>
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>

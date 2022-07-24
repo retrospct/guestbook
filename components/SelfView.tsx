@@ -14,11 +14,11 @@ const VIDEO_H = 1440
 
 interface SelfViewProps {
   selfView: boolean
-  // updateSelfView: (show: boolean) => void
+  updateSelfView: (show: boolean) => void
 }
 
 export const SelfView = (props: SelfViewProps) => {
-  // const { selfView } = props
+  const { selfView, updateSelfView } = props
   const [duration, setDuration] = useState<number>(0)
   const [isRecording, setIsRecording] = useState(false)
   const [countdown, setCountdown] = useState<number>(3)
@@ -130,24 +130,24 @@ export const SelfView = (props: SelfViewProps) => {
       mediaRecorder.current = null
     }
 
-    props.selfView ? initMediaStream() : stopStream()
+    selfView ? initMediaStream() : stopStream()
 
     return () => {
       if (mediaStream.current !== null || mediaRecorder.current !== null) stopStream()
     }
-  }, [props.selfView, isFrontCamera, videoDevice, audioInputDevice])
+  }, [selfView, isFrontCamera, videoDevice, audioInputDevice])
 
-  // useEffect(() => {
-  //   if (isMobile) {
-  //     document.addEventListener('visibilitychange', async () => {
-  //       if (document.visibilityState === 'hidden') {
-  //         updateSelfView(false)
-  //       } else {
-  //         updateSelfView(true)
-  //       }
-  //     })
-  //   }
-  // }, [updateSelfView])
+  useEffect(() => {
+    if (isMobile) {
+      document.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState === 'hidden') {
+          props.updateSelfView(false)
+        } else {
+          props.updateSelfView(true)
+        }
+      })
+    }
+  }, [updateSelfView])
 
   useInterval(
     () => {
@@ -172,7 +172,7 @@ export const SelfView = (props: SelfViewProps) => {
     setTimeout(() => {
       mediaRecorder.current?.stop()
       setIsRecording(false)
-    }, 5500)
+    }, 5250)
   }
 
   const onRecordButtonClick = () => {
@@ -205,7 +205,7 @@ export const SelfView = (props: SelfViewProps) => {
           </Box>
         </Box>
       )}
-      {props.selfView && (
+      {selfView && (
         <Box w="100%" pos="relative">
           <video
             autoPlay
@@ -218,8 +218,8 @@ export const SelfView = (props: SelfViewProps) => {
               width: '100%',
               maxWidth: VIDEO_W,
               height: '100%',
-              maxHeight: VIDEO_H,
-              transform: isFrontCamera ? 'scaleX(-1)' : 'scaleX(1)'
+              maxHeight: VIDEO_H
+              // transform: isFrontCamera ? 'scaleX(-1)' : 'scaleX(1)'
             }}
             ref={videoElement}
           />
