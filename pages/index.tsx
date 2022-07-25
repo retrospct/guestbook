@@ -73,7 +73,7 @@ const Home: NextPage = (props: HomeProps) => {
       document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'hidden') {
           console.log('browser hidden visibility')
-          // setSelfView(false)
+          setSelfView(false)
         } else {
           console.log('browser back in view')
           console.log('updating videos...')
@@ -97,7 +97,8 @@ const Home: NextPage = (props: HomeProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} />
+        {/* <SelfView selfView={selfView} updateSelfView={(show: boolean) => setSelfView(show)} /> */}
+        <SelfView selfView={selfView} />
         <Heading as="h1" pt={14} textAlign="center">
           🐙 Leah&apos;s Birthday Guestbook!
         </Heading>

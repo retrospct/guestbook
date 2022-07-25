@@ -14,11 +14,11 @@ const VIDEO_H = 1440
 
 interface SelfViewProps {
   selfView: boolean
-  updateSelfView: (show: boolean) => void
+  // updateSelfView: (show: boolean) => void
 }
 
 export const SelfView = (props: SelfViewProps) => {
-  const { selfView, updateSelfView } = props
+  const { selfView } = props
   const [duration, setDuration] = useState<number>(0)
   const [isRecording, setIsRecording] = useState(false)
   const [countdown, setCountdown] = useState<number>(3)
@@ -137,17 +137,17 @@ export const SelfView = (props: SelfViewProps) => {
     }
   }, [selfView, isFrontCamera, videoDevice, audioInputDevice])
 
-  useEffect(() => {
-    if (isMobile) {
-      document.addEventListener('visibilitychange', async () => {
-        if (document.visibilityState === 'hidden') {
-          props.updateSelfView(false)
-        } else {
-          props.updateSelfView(true)
-        }
-      })
-    }
-  }, [updateSelfView])
+  // useEffect(() => {
+  //   if (isMobile) {
+  //     document.addEventListener('visibilitychange', async () => {
+  //       if (document.visibilityState === 'hidden') {
+  //         updateSelfView(false)
+  //       } else {
+  //         updateSelfView(true)
+  //       }
+  //     })
+  //   }
+  // }, [updateSelfView])
 
   useInterval(
     () => {
@@ -172,7 +172,7 @@ export const SelfView = (props: SelfViewProps) => {
     setTimeout(() => {
       mediaRecorder.current?.stop()
       setIsRecording(false)
-    }, 5250)
+    }, 5500)
   }
 
   const onRecordButtonClick = () => {
