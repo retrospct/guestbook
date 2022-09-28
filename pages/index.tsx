@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Heading, Text } from '@chakra-ui/react'
+import { Link, Heading, Text } from '@chakra-ui/react'
 import Mux from '@mux/mux-node'
 import { isMobile } from 'react-device-detect'
 
@@ -14,6 +14,7 @@ import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
 import { VideoAsset } from '../model'
 import { SelfViewSwitch } from '../components/SelfViewSwitch'
+// import jsonData from '../master.json'
 
 interface HomeProps {
   assets?: VideoAsset[] | []
@@ -86,6 +87,35 @@ const Home: NextPage = (props: HomeProps) => {
     }
   }, [])
 
+  // useEffect(() => {
+  //   const updateMaster = async (id: string) => {
+  //     const myHeaders = new Headers()
+  //     myHeaders.append('Content-Type', 'application/json')
+  //     myHeaders.append('Accept', 'application/json')
+  //     myHeaders.append(
+  //       'Authorization',
+  //       'Basic ZTQwMmEzMTMtMTg0NC00NDU0LWE2MzMtNGY0YTM0ZmFjZWMxOkk4UUhQcDl5MjZKL2RKVUszMnZtQ0g0a3NSeTQ0SldQRSsxZGo5OThpZ2hUaUIwU1NmTDJITDBtSFJydXYxb0MzdHd6aDQrbTRjMQ=='
+  //     )
+
+  //     const raw = JSON.stringify({ master_access: 'none' })
+
+  //     const requestOptions: RequestInit = {
+  //       method: 'PUT',
+  //       headers: myHeaders,
+  //       body: raw,
+  //       redirect: 'follow'
+  //     }
+
+  //     return fetch(`https://api.mux.com/video/v1/assets/${id}/master-access`, requestOptions)
+  //       .then((response) => response.text())
+  //       .then((result) => console.log(result))
+  //       .catch((error) => console.log('error', error))
+  //   }
+  //   jsonData.data.forEach((item) => {
+  //     updateMaster(item.id)
+  //   })
+  // }, [])
+
   return (
     <Container>
       <Head>
@@ -111,6 +141,11 @@ const Home: NextPage = (props: HomeProps) => {
         {videos?.length > 0 && <Gallery videos={videos} processing={isProcessing} />}
       </Main>
       <SelfViewSwitch selfView={selfView} toggleSelfView={() => setSelfView(!selfView)} />
+      {/* {jsonData.data.map((asset, i) => (
+        <Link key={asset.id} href={asset.master.url} isExternal>
+          {i + 1}) {asset.master.url}
+        </Link>
+      ))} */}
       {/* <DarkModeSwitch /> */}
       <Footer />
     </Container>
@@ -125,6 +160,8 @@ export async function getServerSideProps() {
   const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!)
   const assets = await Video.Assets.list({})
   console.log('assets: ', assets?.length)
+  // const inputInfo = await Video.Assets.inputInfo(assets[0].id)
+  // console.info('inputInfo', inputInfo)
 
   return { props: { assets } }
 }

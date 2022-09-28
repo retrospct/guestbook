@@ -43,6 +43,11 @@ const Video: NextPage = () => {
         </Box>
         <Box w="fit-content">
           {!id || Array.isArray(id) ? <h2>Opps! No video ID was provided...</h2> : <VideoPlayer id={id} />}
+          {!id || Array.isArray(id) ? (
+            <h2>Opps! No video ID was provided...</h2>
+          ) : (
+            <video src={`https://stream.mux.com/${id}.m3u8`} controls={true} />
+          )}
         </Box>
       </Box>
       {/* </Main> */}
