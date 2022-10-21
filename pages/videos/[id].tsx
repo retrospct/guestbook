@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
-import MuxPlayer from '@mux-elements/mux-player-react'
+import MuxPlayer from '@mux/mux-player-react'
 import { Box } from '@chakra-ui/react'
 
 import { Container } from '../../components/Container'

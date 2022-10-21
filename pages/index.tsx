@@ -25,42 +25,42 @@ const Home: NextPage = (props: HomeProps) => {
   const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
-    console.log('subscription: ', supabase.getSubscriptions())
-    if (supabase.getSubscriptions().length === 0 || supabase.getSubscriptions()[0]?.state === 'closed') {
-      const subscription = supabase
-        .from('activity')
-        .on('*', (event) => {
-          console.log('event: ', event)
-          if (event.new.type === 'video.asset.created') {
-            console.log('video.asset.created...')
-            setIsProcessing(true)
-          }
-          if (event.new.type === 'video.asset.ready') {
-            console.log('ready...')
-            setIsProcessing(false)
-            setVideos((prev) => {
-              if (!prev || prev.length === 0) return [event.new.payload]
-              return [event.new.payload, ...prev]
-            })
-          }
-          if (event.new.type === 'video.asset.deleted') {
-            console.log('deleted...')
-            setVideos((prev) => {
-              if (prev.length === 1) return []
-              return prev.filter((video) => video.id !== event.new.payload.id)
-            })
-          }
-        })
-        .subscribe()
+    console.log('subscription: ', supabase.getChannels())
+    // if (supabase.getChannels().length === 0 || supabase.getChannels()[0]?.state === 'closed') {
+    //   const subscription = supabase
+    //     .from('activity')
+    //     .on('*', (event) => {
+    //       console.log('event: ', event)
+    //       if (event.new.type === 'video.asset.created') {
+    //         console.log('video.asset.created...')
+    //         setIsProcessing(true)
+    //       }
+    //       if (event.new.type === 'video.asset.ready') {
+    //         console.log('ready...')
+    //         setIsProcessing(false)
+    //         setVideos((prev) => {
+    //           if (!prev || prev.length === 0) return [event.new.payload]
+    //           return [event.new.payload, ...prev]
+    //         })
+    //       }
+    //       if (event.new.type === 'video.asset.deleted') {
+    //         console.log('deleted...')
+    //         setVideos((prev) => {
+    //           if (prev.length === 1) return []
+    //           return prev.filter((video) => video.id !== event.new.payload.id)
+    //         })
+    //       }
+    //     })
+    //     .subscribe()
 
-      subscription.onClose(() => {
-        console.log('subscription closed...')
-        subscription.rejoinUntilConnected()
-        console.log('subscription in closed: ', supabase.getSubscriptions())
-      })
+    //   subscription.onClose(() => {
+    //     console.log('subscription closed...')
+    //     subscription.rejoinUntilConnected()
+    //     console.log('subscription in closed: ', supabase.getSubscriptions())
+    //   })
 
-      console.log('subscription in IF: ', supabase.getSubscriptions())
-    }
+    //   console.log('subscription in IF: ', supabase.getSubscriptions())
+    // }
 
     // FIXME: subscription is being closed as it initiates twice? Look into hoisting up this subscription to avoid rerendering.
     // return () => {
@@ -81,7 +81,7 @@ const Home: NextPage = (props: HomeProps) => {
           setVideos(data.assets)
           // setSelfView(true)
         }
-        console.log('subscription in visibility: ', supabase.getSubscriptions())
+        console.log('subscription in visibility: ', supabase.getChannels())
       })
     }
   }, [])
