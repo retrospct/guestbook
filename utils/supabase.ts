@@ -1,18 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 
-export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!, {
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
     realtime: {
       params: {
-        eventsPerSecond: 10,
-      },
-    },
-  })
+        eventsPerSecond: 10
+      }
+    }
+  }
+)
 
 // import { useState, useEffect } from 'react'
 // import { createClient } from '@supabase/supabase-js'
 // import { User } from '../model'
 
-// export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!)
+// export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
 // /**
 //  * @param {number} videoId the currently selected Video
