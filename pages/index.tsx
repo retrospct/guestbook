@@ -123,7 +123,7 @@ export async function getServerSideProps() {
 
   // TODO: init a single mux video client for the entire app
   const { Video } = new Mux(process.env.MUX_TOKEN_ID!, process.env.MUX_TOKEN_SECRET!)
-  const assets = await Video.Assets.list({})
+  const assets = await Video.Assets.list({ limit: 75 })
   console.log('assets: ', assets?.length)
 
   return { props: { assets } }
